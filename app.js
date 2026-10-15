@@ -5,6 +5,7 @@
 (function () {
   const selected = new Set();
   let hasRun = false;
+  let pendingRun = null; // timeout id while the "analyzing" delay is running
 
   const habitGrid = document.getElementById("habitGrid");
   const clearBtn = document.getElementById("clearBtn");
@@ -453,7 +454,7 @@
   function updateRunState() {
     const n = selected.size;
     selectionCount.textContent = `${n} habit${n === 1 ? "" : "s"} selected`;
-    runBtn.disabled = n < 2;
+    runBtn.disabled = n < 2 || pendingRun !== null;
   }
 
   function clearAll() {
@@ -468,6 +469,17 @@
   }
 
   function resetResults() {
+    if (pendingRun !== null) {
+      clearTimeout(pendingRun);
+      pendingRun = null;
+      updateRunState();
+    }
+    endTour();
+    currentPaths = [];
+    currentPathIndex = 0;
+    simulationState = null;
+    runSelection = new Set();
+
     resultsEmpty.hidden = false;
     analyzing.hidden = true;
     resultsChain.hidden = true;
@@ -488,48 +500,6 @@
   function habitLabel(id) {
     const h = HABITS.find((x) => x.id === id);
     return h ? h.label : id;
-  }
-
-  // --- Named, hand-authored scenarios (checked first) ---
-  function findNamedChains(selectedIds) {
-    return CHAINS.filter((chain) =>
-      chain.requiredHabits.every((h) => selectedIds.has(h))
-    ).sort((a, b) => b.requiredHabits.length - a.requiredHabits.length);
-  }
-
-  // --- Generic rules-engine assembler (fallback for any other combination) ---
-  function assembleGenericChain(selectedIds) {
-    const entries = HABITS.filter((h) => h.role === "entry" && selectedIds.has(h.id));
-    const weaknesses = HABITS.filter((h) => h.role === "weakness" && selectedIds.has(h.id));
-    const signals = HABITS.filter((h) => h.role === "signal" && selectedIds.has(h.id));
-
-    if (entries.length === 0 || weaknesses.length === 0) {
-      return { chain: null, entries, weaknesses, signals };
-    }
-
-    const entry = entries[0];
-    const steps = [entry.entryStep, entry.entryConsequence];
-
-    weaknesses.forEach((w) => steps.push(w.weaknessStep));
-    signals.forEach((s) => steps.push(s.signalStep));
-
-    const finalImpact = signals.length > 0 ? signals[0].finalImpact : GENERIC_FINAL_IMPACT;
-    steps.push(finalImpact);
-
-    const titleParts = [entry.shortName, weaknesses[0].shortName];
-    if (signals.length > 0) titleParts.push(signals[0].shortName);
-    else titleParts.push("Account Takeover");
-
-    const chain = {
-      id: "generic",
-      name: titleParts.join(" → "),
-      steps,
-      weakestLink: weaknesses[0].id,
-      weakestLinkStepIndex: 2, // right after entryStep + entryConsequence
-      generic: true,
-    };
-
-    return { chain, entries, weaknesses, signals };
   }
 
   // ---------------------------------------------------------------------
@@ -653,6 +623,7 @@
   }
 
   function runSimulation() {
+    if (pendingRun !== null) return;
     activateTab("chain");
 
     resultsEmpty.hidden = true;
@@ -662,7 +633,9 @@
 
     const selectedSnapshot = new Set(selected);
 
-    setTimeout(() => {
+    pendingRun = setTimeout(() => {
+      pendingRun = null;
+      updateRunState();
       try {
         analyzing.hidden = true;
         hasRun = true;
@@ -677,6 +650,7 @@
         console.error("ChainReaction simulation error:", err);
       }
     }, 1350);
+    updateRunState();
   }
 
   function renderProfileSummary(selectedIds) {
@@ -713,6 +687,7 @@
 
     const interventionData = computeInterventions(selectedIds);
 
+    runSelection = new Set(selectedIds);
     currentPaths = paths;
     currentPathIndex = 0;
     currentPerspective = "my";
@@ -740,6 +715,10 @@
   let currentPathIndex = 0;
   let currentPerspective = "my";
   let simulationState = null;
+  // The selection the visible results were built from. Post-run math (fix
+  // counts, interventions, MFA preview) must use this, not the live
+  // `selected` set, which the user can keep editing after a run.
+  let runSelection = new Set();
 
   function pathNodeCount(paths) {
     const nodes = new Set();
@@ -821,6 +800,7 @@
     } else if (weakestLinkPanel) {
       weakestLinkPanel.hidden = true;
     }
+    if (currentPerspective === "attacker") applyPerspective();
   }
 
   // --- perspective toggle -------------------------------------------------
@@ -950,8 +930,8 @@
   let tourState = null;
 
   function computeMfaRemovedCount(path) {
-    const base = buildPaths(selected).length;
-    const reducedSet = new Set(selected);
+    const base = buildPaths(runSelection).length;
+    const reducedSet = new Set(runSelection);
     reducedSet.delete(path.weakestLink);
     const after = buildPaths(reducedSet).length;
     return base - after;
@@ -1112,8 +1092,8 @@
     const reduced = prefersReducedMotion();
     setMfaPreview(path.weakestLinkStepIndex, true);
 
-    const base = buildPaths(selected).length;
-    const reducedSet = new Set(selected);
+    const base = buildPaths(runSelection).length;
+    const reducedSet = new Set(runSelection);
     reducedSet.delete(path.weakestLink);
     const after = buildPaths(reducedSet).length;
     const removedCount = base - after;
@@ -1212,7 +1192,7 @@
     const sim = document.getElementById("simResult");
     if (!sim) return;
 
-    const reduced = new Set(selected);
+    const reduced = new Set(runSelection);
     reduced.delete(item.habitId);
     const afterPaths = buildPaths(reduced);
     const afterIds = new Set(afterPaths.map((p) => p.id));
@@ -1500,8 +1480,8 @@
     // hidden on-screen until the button reveals it, preserving the reveal.
     const habit = HABITS.find((h) => h.id === weakestLinkId);
     const advice = habit && habit.fixAdvice ? habit.fixAdvice : "";
-    const base = buildPaths(selected).length;
-    const reduced = new Set(selected);
+    const base = buildPaths(runSelection).length;
+    const reduced = new Set(runSelection);
     reduced.delete(weakestLinkId);
     const after = buildPaths(reduced).length;
     const removed = base - after;
@@ -2265,9 +2245,7 @@
     const summaryEl = document.getElementById("quickChainSummary");
     const weakestEl = document.getElementById("quickWeakest");
 
-    const named = findNamedChains(selected);
-    const generic = assembleGenericChain(selected);
-    const chain = named.length > 0 ? named[0] : generic.chain;
+    const chain = buildPaths(selected)[0] || null;
 
     if (chain) {
       if (nameEl) nameEl.textContent = chain.name;

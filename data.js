@@ -499,7 +499,7 @@ const FAQ = [
   },
   {
     triggers: ["who made", "who built", "who created", "creator"],
-    answer: "Built for the Elevate Women Global Hackathon 2026. I'm the rule-based assistant bolted on at the end: think of me as the friendly front desk, not the security engine itself.",
+    answer: "Built by Radha as an independent security-education project. I'm the rule-based assistant bolted on at the end: think of me as the friendly front desk, not the security engine itself.",
   },
   {
     triggers: ["help", "start", "confused", "what do i do"],
@@ -593,7 +593,7 @@ const CHAINS = [
     requiredHabits: ["qr_scan", "password_reuse"],
     weakestLink: "password_reuse",
     weakestLinkStepIndex: 4,
-    stepHabits: ["qr_scan", null, null, null, "password_reuse"],
+    stepHabits: ["qr_scan", null, null, null, "password_reuse", null],
     realWorld: "QR-code phishing (\"quishing\") has surged precisely because it skips every filter built to catch suspicious links. Nothing scans a code sitting on a parking meter before you do.",
     steps: [
       "You scan a QR code on a parking meter or flyer without checking where it leads.",
@@ -601,6 +601,7 @@ const CHAINS = [
       "You enter your usual password out of habit.",
       "The attacker now has that password.",
       "Because you reuse it, they try it across your other accounts.",
+      "Every account that shares that password is now open to them, all from one scan.",
     ],
   },
   {
@@ -734,7 +735,7 @@ const CHAINS = [
     requiredHabits: ["public_employer", "overshare_social", "password_reuse"],
     weakestLink: "password_reuse",
     weakestLinkStepIndex: 4,
-    stepHabits: ["public_employer", "overshare_social", null, null, "password_reuse"],
+    stepHabits: ["public_employer", "overshare_social", null, null, "password_reuse", null],
     realWorld: "No single post here is sensitive. The aggregate is, which is exactly why this pattern is so easy to miss while it's being assembled.",
     objective: "Account takeover via recovery questions",
     steps: [
@@ -743,6 +744,7 @@ const CHAINS = [
       "Those are the same values commonly used as account recovery answers.",
       "A recovery flow that relies on those questions can be attempted rather than guessed blindly.",
       "Because the resulting password is reused, one recovered account may open several.",
+      "Several accounts can be taken over using nothing but details you posted in public.",
     ],
   },
   {
@@ -802,7 +804,7 @@ const CHAINS = [
     requiredHabits: ["public_employer", "no_verify_sender", "no_email_2fa"],
     weakestLink: "no_email_2fa",
     weakestLinkStepIndex: 4,
-    stepHabits: ["public_employer", null, null, "no_verify_sender", "no_email_2fa"],
+    stepHabits: ["public_employer", null, null, "no_verify_sender", "no_email_2fa", null],
     realWorld: "Internal-looking mail is convincing precisely because the org chart it imitates is usually public.",
     objective: "Workplace credential compromise",
     steps: [
@@ -811,6 +813,7 @@ const CHAINS = [
       "A message arrives that appears to come from someone you actually work with.",
       "The sender address isn't checked, because the display name looks right.",
       "With no second factor on your email, a captured password is enough on its own.",
+      "They are inside your work inbox and can message real colleagues as you.",
     ],
   },
   {

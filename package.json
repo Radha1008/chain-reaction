@@ -1,0 +1,9 @@
+{
+  "name": "chain-reaction",
+  "private": true,
+  "description": "Privacy-first attack-path simulator",
+  "license": "MIT",
+  "scripts": {
+    "test": "node tests/test-bugfixes.js && node tests/test-demo-tour.js"
+  }
+}
