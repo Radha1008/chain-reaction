@@ -23,12 +23,12 @@ Fixed in Step 2 (were blocking it):
 - `setupWeakestLink` is now called from `renderSelectedPath`, so the weakest-link/"Simulate MFA" panel renders.
 - `attackerLineFor`/`showNodeDetail` now read a per-chain `stepHabits` array instead of indexing `habitsInPath` by step position.
 
-Engine bugs found by a code review of the initial commit (still NOT fixed - none are Step 1 or 2 work; fold the relevant ones into Steps 4/6):
-- `simulateIntervention` (app.js, generic interventions panel) rebuilds from the live `selected` set but compares against the run-time snapshot, so before/after counts can claim a fix *adds* paths.
-- `renderSelectedPath` doesn't re-apply `currentPerspective`, so switching paths silently reverts the text to My view while the Attacker view button stays highlighted.
-- Three chains in data.js (`qr_code_trap`, `public_profile_puzzle`, `overshared_workspace`) set `weakestLinkStepIndex` to the final step index, so those chains render with no escalation stage. (`fake_recruiter_chain` was a fourth instance of this; fixed incidentally by the Step 2 MFA-step addition.)
-- Quick check uses `assembleGenericChain`, Full assessment uses `buildPaths` - the two surfaces give different answers for identical input.
-- `runSimulation` is re-entrant (run button never disabled during the 1350 ms delay); `resetResults` doesn't clear `currentPaths`/`currentPathIndex`/`simulationState`.
+Engine bugs from the initial-commit code review: ALL FIXED 2026-10-15 (regression test: `npm test`, files in `tests/`):
+- Post-run math (`simulateIntervention`, `setupWeakestLink`, `computeMfaRemovedCount`, `runTourFix`) now reads `runSelection`, the snapshot set in `executeChain`, never the live `selected` set.
+- `renderSelectedPath` re-applies `applyPerspective()` when the Attacker view is active.
+- `qr_code_trap`, `public_profile_puzzle`, `overshared_workspace` each gained a final-impact step (+ trailing `null` in `stepHabits`) so the weakest link is no longer the last step. Rule for new chains: `weakestLinkStepIndex < steps.length - 1`.
+- Quick check now uses `buildPaths(selected)[0]`, same as Full assessment. `findNamedChains`/`assembleGenericChain` deleted (dead).
+- `runSimulation` guarded by `pendingRun` (run button disabled during the delay); `resetResults` cancels a pending run and clears `currentPaths`/`currentPathIndex`/`simulationState`/`runSelection` and any open tour. This also fixed Clear-during-analysis re-showing results.
 
 Cosmetic, deferred to Step 6:
 - Paper theme: stage icon rings (`--stage-initial_access` amber especially) read pale against the off-white. Icons carry the meaning so it isn't colour-only. Mitigated today (border audit fix): `.surface-node`/`.surface-center` now also carry a `box-shadow: var(--shadow-soft)` so the surface always reads as distinct even where a specific stage hue is borderline, but the ring colour itself still isn't individually contrast-checked per stage - do that properly in Step 6.

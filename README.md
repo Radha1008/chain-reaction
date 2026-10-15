@@ -12,8 +12,6 @@ Most security advice is a list of rules with no visible cause and effect. Chain 
 
 Everyday people, not security teams. It was built with women facing harassment, impersonation and scams in mind, since those chains usually start from public profile details rather than from malware.
 
-Built for the Elevate Women Global Hackathon 2026.
-
 ## How it works
 
 - **Deterministic rules engine.** Every chain, score and recommendation comes from hand-written rules in `data.js`. The same inputs always produce the same output. There is no model call and nothing is generated at runtime.
@@ -32,11 +30,21 @@ Everything runs in the browser. No accounts, no uploads, no tracking, no analyti
 - The guided walkthrough only covers the job-seeker chain.
 - It is educational. It is not a professional risk assessment and should not be treated as one.
 
-## Built during the hackathon
+## Background
 
-Development began 19 September 2026 and the first commit landed 20 September 2026. Earlier work was local; it is documented by file timestamps and by Claude Code session logs.
+Chain Reaction started in September 2026 as my project for the Elevate Women Global Hackathon. I've since kept building it as an independent personal project.
 
 Built with Claude Code. I directed every decision: scope, scenarios, rules, copy and design. The logo art was generated with Gemini. No third-party libraries or fonts are used.
+
+## Running the tests
+
+The tests drive the real page in headless Chrome over the DevTools protocol. They need Node 22+ and Chrome, and have no npm dependencies.
+
+```
+npm test
+```
+
+If Chrome isn't in a standard location, set `CHROME_PATH` first.
 
 ## Next steps
 

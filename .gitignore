@@ -14,3 +14,7 @@ tmp/
 node_modules/
 *.csv
 logo-source.jpg
+
+# Private working notes (kept locally, not published)
+BRIEF.md
+PROGRESS.md
