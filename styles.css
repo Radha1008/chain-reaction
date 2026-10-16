@@ -4338,6 +4338,11 @@ input:focus-visible,
 /* Footer: one centred column. */
 .footer-inner { flex-direction: column; align-items: center; text-align: center; gap: 14px; }
 .footer-inner p { max-width: 72ch; }
+.safety-design { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--border-soft); }
+.safety-design h3 { margin: 0 0 6px; font-size: 16px; }
+.safety-design p { margin: 0 0 8px; color: var(--text-dim); font-size: 14px; }
+.safety-design ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; font-size: 14px; color: var(--text-dim); }
+.safety-design b { color: var(--text); }
 .footer-copy { font-size: 12.5px; color: var(--text-dim); }
 .footer-brand { font-size: 18px; font-weight: 800; letter-spacing: -0.025em; white-space: nowrap; }
 

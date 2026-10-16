@@ -27,6 +27,15 @@ Everyday people first, without leaving security professionals out. It was built 
 - **Deterministic rules engine.** Every chain, score and recommendation comes from hand-written content in `data.js` and the rules in `engine.js`. The same inputs always produce the same output. There is no model call and nothing is generated at runtime.
 - **Cipher.** A rule-based assistant that explains terms and adds habits to your assessment. Rule-based, not a chatbot.
 
+## Safety by design
+
+An attack-path tool can be misread as a how-to, so the content follows four rules:
+
+- **What, never how.** Steps describe what happens at the level of FTC and CISA consumer guidance. The content names no attack or stalkerware tools and contains no commands or instructions. The home terminal's commands are invented.
+- **No real targets.** There is no way to enter a real person. Every character and scenario is fictional.
+- **Every chain ends in a fix.** Each path is paired with the change that breaks it and a free official guide.
+- **Enforced, not promised.** `tests/test-engine.js` fails if the content ever names a known attack or stalkerware tool, includes a shell command, or has a chain without a fix.
+
 ## Sources and links
 
 Every guide and recovery link points at a free, official or non-profit source (CISA, FTC, FCC, FBI IC3, the National Cybersecurity Alliance, NNEDV, Have I Been Pwned). Each one was loaded in a real browser to confirm it works and is current. There are no sponsored or affiliate links, and the advice names no commercial products.

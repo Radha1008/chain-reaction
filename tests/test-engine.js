@@ -67,7 +67,20 @@ const urls = Object.values(C.GUIDES).map((g) => g[2]).concat(C.RECOVERY.flatMap(
 const odd = urls.filter((u) => !allowed.test(u));
 check(odd.length === 0, `every guide and recovery link is an approved https source (${odd.join(", ") || "all approved"})`);
 
-console.log("\n[5] engine");
+console.log("\n[5] safety by design: what, never how");
+// Everything a visitor can read: the content, the page, and the scripts that write copy.
+const visible = ["data.js", "index.html", "home.js", "assess.js", "app.js"].map(load).join("\n");
+const TOOLS = ["evilginx", "modlishka", "muraena", "gophish", "mimikatz", "hashcat", "john the ripper", "hydra", "aircrack", "wifi pineapple", "bettercap", "metasploit", "sqlmap", "responder", "mspy", "flexispy", "cocospy", "spyic", "eyezy", "hoverwatch", "xnspy", "thetruthspy"];
+const named = TOOLS.filter((t) => new RegExp("\\b" + t.replace(/ /g, "\\s+") + "\\b", "i").test(visible));
+check(named.length === 0, `no attack or stalkerware tool is named (${named.join(", ") || "none"})`);
+const CMDS = [/\bsudo\s/, /\bcurl\s+-/, /\bwget\s+http/, /\bnmap\s/, /\bpip\s+install\b/, /\bapt(-get)?\s+install\b/, /\bgit\s+clone\b/, /\bpowershell\s+-/i, /\bchmod\s+\+x\b/, /\bnc\s+-[lnv]/];
+const cmdHits = CMDS.filter((re) => re.test(visible)).map(String);
+check(cmdHits.length === 0, `no real shell commands in visitor-facing content (${cmdHits.join(", ") || "none"})`);
+const noFix = C.CHAINS.filter((c) => !c.weakestLink || !C.FIX_ACTIONS[c.weakestLink] || !C.FIX_GUIDES[c.weakestLink]).map((c) => c.id);
+check(noFix.length === 0, `every chain ends in a fix with an official guide (${noFix.join(", ") || "all"})`);
+check(C.HABITS.every((h) => h.fixAdvice && h.fixAdvice.length > 30), "every habit carries fix advice");
+
+console.log("\n[6] engine");
 const job = new Set(["public_employer", "active_job_search", "public_email", "no_email_2fa", "password_reuse"]);
 const jobPaths = C.E.buildPaths(job);
 check(jobPaths.length === 1 && jobPaths[0].id === "fake_recruiter_chain", `job seeker forms the fake recruiter chain (${jobPaths.map((p) => p.id).join(", ")})`);
