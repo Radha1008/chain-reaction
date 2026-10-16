@@ -14,6 +14,10 @@ Everyday people, not security teams. It was built with women facing harassment, 
 
 ## How it works
 
+- **Recon terminal on the home page.** Play the attacker for 30 seconds against one of three made-up targets, each showing a different attack: Sue Doe (phishing), Justin Case (an old breached password plus a smart lock) and Simone Swap (a SIM swap). Click commands, watch the chain build, then play the defender and break it.
+- **A guide on every page.** A short "what this page does" line and numbered steps that follow you as you scroll, so someone with no security background always knows where they are and what to do next.
+- **Plain-English jargon.** Terms like phishing, 2FA and SIM swap are tappable and explain themselves.
+- **Field notes.** Small, sourced facts from the FBI, FTC, FCC, Microsoft Research and Lockheed Martin, one per section.
 - **Deterministic rules engine.** Every chain, score and recommendation comes from hand-written rules in `data.js`. The same inputs always produce the same output. There is no model call and nothing is generated at runtime.
 - **Guided job-seeker walkthrough.** A step-by-step scenario that follows one person through a fake recruiter approach and shows each link as it forms.
 - **Attacker view.** The same profile rewritten as what an attacker sees and can use, instead of what the defender is told to fix.
@@ -34,7 +38,7 @@ Everything runs in the browser. No accounts, no uploads, no tracking, no analyti
 
 Chain Reaction started in September 2026 as my project for the Elevate Women Global Hackathon. I've since kept building it as an independent personal project.
 
-Built with Claude Code. I directed every decision: scope, scenarios, rules, copy and design. The logo art was generated with Gemini. No third-party libraries or fonts are used.
+Built with Claude Code. I directed every decision: scope, scenarios, rules, copy and design. The logo art was generated with Gemini. No third-party libraries are used. The Fraunces font is bundled in `fonts/` under the SIL Open Font License (see `fonts/OFL.txt`), so the page still makes no third-party network requests.
 
 ## Running the tests
 

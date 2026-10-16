@@ -1870,58 +1870,6 @@
     render();
   }
 
-  // --- Scroll reveal + count-up (home page motion) ---
-  function setupReveals() {
-    const items = document.querySelectorAll(".reveal");
-    if (items.length === 0) return;
-
-    if (!("IntersectionObserver" in window)) {
-      items.forEach((el) => el.classList.add("shown"));
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          entry.target.classList.add("shown");
-
-          const numEl = entry.target.querySelector(".figure-num");
-          if (numEl && !numEl.dataset.counted) {
-            numEl.dataset.counted = "1";
-            countUp(numEl);
-          }
-
-          observer.unobserve(entry.target);
-        });
-      },
-      { threshold: 0.18, rootMargin: "0px 0px -40px 0px" }
-    );
-
-    items.forEach((el) => observer.observe(el));
-  }
-
-  function countUp(el) {
-    const target = parseInt(el.textContent, 10);
-    const suffix = el.dataset.suffix || "";
-    if (isNaN(target) || target === 0) return;
-    const duration = 900;
-    const start = performance.now();
-
-    function frame(now) {
-      const progress = Math.min(1, (now - start) / duration);
-      // ease-out so it decelerates into the final number
-      const eased = 1 - Math.pow(1 - progress, 3);
-      el.textContent = Math.round(target * eased) + suffix;
-      if (progress < 1) requestAnimationFrame(frame);
-      else el.textContent = target + suffix;
-    }
-
-    el.textContent = "0" + suffix;
-    requestAnimationFrame(frame);
-  }
-
-
   // --- Situation selector: highlights the factors that matter for a given
   // threat model. It never filters anything out. Nothing is gated on it.
   let activeSituation = null;
@@ -1991,14 +1939,6 @@
     const demoBtn = document.getElementById("demoBtn");
     if (demoBtn) demoBtn.addEventListener("click", loadDemo);
 
-    const heroDemo = document.getElementById("heroDemoBtn");
-    if (heroDemo) {
-      heroDemo.addEventListener("click", () => {
-        navigate("full");
-        setTimeout(loadDemo, 220);
-      });
-    }
-
     const clearDemo = document.getElementById("demoClearBtn");
     if (clearDemo) {
       clearDemo.addEventListener("click", () => {
@@ -2015,7 +1955,7 @@
 
   // --- Cipher tips: rule-based speech bubbles, one per page visit, memory only ---
   const CIPHER_TIPS = {
-    home: "Start with the job-seeker scenario.",
+    home: "Try the attacker's terminal first. No typing needed.",
     quick: "Six quick questions, no wrong answers.",
     full: "Pick a few habits and I'll show you the chain.",
     results: "Hover any step to see why it's connected.",
@@ -2071,94 +2011,13 @@
 
     window.scrollTo({ top: 0, behavior: "smooth" });
     showCipherTip(pageName);
+    // home.js listens for this to swap the page guide.
+    document.dispatchEvent(new CustomEvent("cr:navigate", { detail: pageName }));
   }
 
   function setupRouting() {
     document.querySelectorAll("[data-page]").forEach((el) => {
       el.addEventListener("click", () => navigate(el.dataset.page));
-    });
-  }
-
-  // --- Home page content ---
-  function renderHomeScenarios() {
-    const grid = document.getElementById("homeScenarios");
-    if (!grid) return;
-    grid.innerHTML = "";
-
-    CHAINS.slice(0, 3).forEach((chain) => {
-      const weights = chain.requiredHabits.reduce(
-        (sum, id) => sum + (SEVERITY_WEIGHTS[id] || 0),
-        0
-      );
-      const card = document.createElement("button");
-      card.type = "button";
-      card.className = "scenario-card";
-      card.innerHTML = `
-        <span class="scenario-score">${Math.min(10, weights)}<span class="scenario-score-max">/10</span></span>
-        <h3>${chain.name}</h3>
-        <p>${chain.steps[0]}</p>
-        <span class="scenario-cta">Load this scenario</span>
-      `;
-      card.addEventListener("click", () => {
-        loadCombo(chain.requiredHabits);
-        navigate("full");
-      });
-      grid.appendChild(card);
-    });
-
-    const figChains = document.getElementById("figChains");
-    const figCombos = document.getElementById("figCombos");
-    if (figChains) figChains.textContent = CHAINS.length;
-    if (figCombos) {
-      const e = HABITS.filter((h) => h.role === "entry").length;
-      const w = HABITS.filter((h) => h.role === "weakness").length;
-      figCombos.textContent = e * w;
-    }
-  }
-
-  // A decorative, self-animating copy of the surface map for the landing page.
-  function renderHeroMap() {
-    const container = document.getElementById("heroMap");
-    if (!container) return;
-    container.innerHTML = "";
-
-    const center = document.createElement("div");
-    center.className = "surface-center active";
-    center.innerHTML = `
-      ${iconSpan("person", "currentColor")}
-      <span class="surface-center-label">You</span>
-    `;
-    container.appendChild(center);
-
-    const stageOrder = Object.keys(STAGE_META);
-    const n = stageOrder.length;
-
-    stageOrder.forEach((stageId, i) => {
-      const meta = STAGE_META[stageId];
-      const angleDeg = -90 + (360 / n) * i;
-      const angleRad = (angleDeg * Math.PI) / 180;
-      const x = SURFACE_RADIUS * Math.cos(angleRad);
-      const y = SURFACE_RADIUS * Math.sin(angleRad);
-
-      const line = document.createElement("div");
-      line.className = "surface-line hero-line";
-      line.style.width = SURFACE_RADIUS + "px";
-      line.style.transform = `translateY(-50%) rotate(${angleDeg}deg)`;
-      line.style.background = meta.color;
-      line.style.animationDelay = i * 0.7 + "s";
-      container.appendChild(line);
-
-      const node = document.createElement("div");
-      node.className = "surface-node hero-node";
-      node.style.left = `calc(50% + ${x}px)`;
-      node.style.top = `calc(50% + ${y}px)`;
-      node.style.borderColor = meta.color;
-      node.style.animationDelay = i * 0.7 + "s";
-      node.innerHTML = `
-        ${iconSpan(meta.icon, meta.color)}
-        <span class="surface-node-label">${meta.label}</span>
-      `;
-      container.appendChild(node);
     });
   }
 
@@ -2268,7 +2127,7 @@
         summaryEl.textContent =
           yesIds.length === 0
             ? "You answered no to everything here. A good sign, though these six are only a slice of the picture."
-            : "Your answers include risk factors but not a full entry-to-impact path. The full assessment covers 12 more habits that often complete it.";
+            : "Your answers include risk factors but not a full entry-to-impact path. The full assessment covers " + (HABITS.length - QUICK_CHECK.length) + " more habits that often complete it.";
       }
       if (weakestEl) weakestEl.hidden = true;
     }
@@ -2432,9 +2291,6 @@
   renderLibrary();
   setupCarousel("libraryGrid", "libraryPrev", "libraryNext", "libraryDots");
   renderSurfaceMap();
-  renderHomeScenarios();
-  renderHeroMap();
-  setupReveals();
   setupQuickCheck();
   setupDemo();
   setupRouting();

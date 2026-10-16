@@ -59,6 +59,8 @@
   --stage-exposure: #e07a5f;
   --stage-iot: #7fa8c9;
   --stage-behavior: #4dd4b0;
+  --term-bg: #0f0b12;
+  --term-fg: #e9e0e6;
 }
 
 /* Paper is the default when the system asks for light and the
@@ -111,6 +113,8 @@
   --stage-exposure: #a03f22;
   --stage-iot: #2f6489;
   --stage-behavior: #0f7a63;
+  --term-bg: #fffdf9;
+  --term-fg: #1f1722;
   }
 }
 
@@ -162,6 +166,8 @@
   --stage-exposure: #a03f22;
   --stage-iot: #2f6489;
   --stage-behavior: #0f7a63;
+  --term-bg: #fffdf9;
+  --term-fg: #1f1722;
 }
 
 * {
