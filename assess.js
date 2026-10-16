@@ -45,7 +45,28 @@
   }
   function anLine(id) {
     const a = ATTACK[id];
-    return "<b>" + (a ? a[0] + " " + a[1] : "No direct ATT&CK technique") + "</b> &middot; " + STAGE_NAME[H[id].stage] + "<br>Defender view: " + DEFEND[id];
+    return (a ? "<b>" + a[0] + " " + a[1] + "</b>" : "<b>No ATT&CK technique</b> &middot; " + (HABIT_ATTACK_GAP[id] || "")) + " &middot; " + STAGE_NAME[H[id].stage] + "<br>Defender view: " + DEFEND[id];
+  }
+
+  // Per step: every step of a path carries its own technique (path.stepTech)
+  // and defender note (path.stepDefend), including the attacker's own moves.
+  function techLink(t, plain) {
+    const url = "https://attack.mitre.org/techniques/" + t.id.replace(".", "/") + "/";
+    return plain ? '<span class="code" title="' + t.name + '">' + t.id + "</span>"
+      : '<a class="code" href="' + url + '" target="_blank" rel="noopener" title="' + t.name + '">' + t.id + "</a>";
+  }
+  function stepChip(p, i) {
+    const t = p.stepTech[i];
+    if (!t) return "";
+    return t.gap ? '<span class="code gap" title="' + t.gap + '">no ATT&amp;CK match</span>' : techLink(t, true);
+  }
+  function stepLine(p, i) {
+    const t = p.stepTech[i], d = p.stepDefend[i];
+    const head = !t ? "" : t.gap ? "<b>No ATT&amp;CK technique</b> &middot; " + t.gap : techLink(t) + " <b>" + t.name + "</b> &middot; " + t.tactic;
+    return head + (d ? (head ? "<br>" : "") + "Defender view: " + d : "");
+  }
+  function tacticStrip(p) {
+    return '<span class="tac-lbl">' + ATTACK_VERSION + " path</span>" + p.tactics.map((t) => '<span class="tac">' + t + "</span>").join('<span class="tac-arr" aria-hidden="true">&rarr;</span>');
   }
 
   // ---------- engine: shared with every page (engine.js) ----------
@@ -258,9 +279,9 @@
     lane.innerHTML = qPath.steps.map((s, i) => {
       const id = qPath.stepHabits[i], last = i === qPath.steps.length - 1, own = id && qSel.has(id);
       const lbl = last ? qPath.objective : id ? H[id].shortName : "Attacker move";
-      return `<button type="button" class="domino ${own ? "mine" : ""} ${last ? "final" : ""}" data-i="${i}" ${own ? "" : 'tabindex="-1"'} aria-label="Step ${i + 1}: ${lbl}"><span class="num">${i + 1}</span><span class="lbl">${lbl}</span>${id ? `<span class="an">${codeChip(id, true)}</span>` : ""}<span class="pip" style="background:${id ? "var(--s-" + H[id].stage + ")" : "var(--line-strong)"}"></span></button>`;
+      return `<button type="button" class="domino ${own ? "mine" : ""} ${last ? "final" : ""}" data-i="${i}" ${own ? "" : 'tabindex="-1"'} aria-label="Step ${i + 1}: ${lbl}"><span class="num">${i + 1}</span><span class="lbl">${lbl}</span><span class="an">${stepChip(qPath, i)}</span><span class="pip" style="background:${id ? "var(--s-" + H[id].stage + ")" : "var(--line-strong)"}"></span></button>`;
     }).join("") + '<svg class="stick idle" id="dStick" viewBox="0 0 70 96" aria-hidden="true">' + STICK + "</svg>";
-    $("dStory").innerHTML = qPath.steps.map((s, i) => `<li data-i="${i}">${s}${qPath.stepHabits[i] ? `<div class="anline an">${anLine(qPath.stepHabits[i])}</div>` : ""}</li>`).join("");
+    $("dStory").innerHTML = qPath.steps.map((s, i) => `<li data-i="${i}">${s}<div class="anline an">${stepLine(qPath, i)}</div></li>`).join("");
     const sv = qPath.severity;
     $("dSev").innerHTML = `Severity <b>${sv.score}/10</b> = ` + sv.breakdown.map((b) => `${b.label} +${b.weight}`).join(" + ");
     lane.querySelectorAll(".domino").forEach((d) => {
@@ -433,7 +454,7 @@
       el.dataset.i = i;
       el.style.left = x + "px"; el.style.top = y + "px"; el.style.textAlign = "left"; el.style.border = "0";
       el.style.transform = `rotate(${((i * 53) % 9) - 4}deg)`;
-      el.innerHTML = `<small>${last ? "the goal" : own ? "your habit" : "attacker move"}</small>${last ? p.objective : id ? H[id].shortName : "Step " + (i + 1)}${id ? `<div class="an">${codeChip(id, true)}</div>` : ""}`;
+      el.innerHTML = `<small>${last ? "the goal" : own ? "your habit" : "attacker move"}</small>${last ? p.objective : id ? H[id].shortName : "Step " + (i + 1)}<div class="an">${stepChip(p, i)}</div>`;
       el.addEventListener("click", () => { capIdx = i; showCaption(); board.querySelectorAll(".note").forEach((x) => x.classList.toggle("sel", +x.dataset.i === i)); });
       board.appendChild(el);
       pts.push([x + nw / 2, y + 2]);
@@ -452,7 +473,7 @@
   }
   function showCaption() {
     const p = paths[pIdx], i = capIdx, id = p.stepHabits[i], last = i === p.steps.length - 1, own = id && sel.has(id);
-    $("caption").innerHTML = `<span class="tagline ${own ? "mine" : ""}">Step ${i + 1} of ${p.steps.length} &middot; ${last ? "the goal: " + p.objective : own ? "your habit: " + H[id].shortName : "attacker move"}</span><p>${p.steps[i]}</p>${id ? `<div class="anline an">${anLine(id)}</div>` : ""}`;
+    $("caption").innerHTML = `<span class="tagline ${own ? "mine" : ""}">Step ${i + 1} of ${p.steps.length} &middot; ${last ? "the goal: " + p.objective : own ? "your habit: " + H[id].shortName : "attacker move"}</span><p>${p.steps[i]}</p><div class="anline an">${stepLine(p, i)}</div>`;
   }
 
   // ---- step 2: case board ----
@@ -465,9 +486,10 @@
     $("pTabs").hidden = paths.length < 2;
     $("pTabs").querySelectorAll(".ptab").forEach((b) => b.addEventListener("click", () => { pIdx = +b.dataset.i; capIdx = 0; renderBoard(true); }));
     const p = paths[pIdx];
+    $("tacStrip").innerHTML = tacticStrip(p);
     $("aSteps").innerHTML = p.steps.map((s, i) => {
       const id = p.stepHabits[i], last = i === p.steps.length - 1, own = id && sel.has(id);
-      return `<li class="${own ? "yours" : ""} ${last ? "final" : ""}"><span class="n">${last ? "!" : i + 1}</span><span><span class="tagline">${last ? "the goal: " + p.objective : own ? "your habit: " + H[id].shortName : "attacker move"}</span>${s}${id ? `<div class="anline an">${anLine(id)}</div>` : ""}</span></li>`;
+      return `<li class="${own ? "yours" : ""} ${last ? "final" : ""}"><span class="n">${last ? "!" : i + 1}</span><span><span class="tagline">${last ? "the goal: " + p.objective : own ? "your habit: " + H[id].shortName : "attacker move"}</span>${s}<div class="anline an">${stepLine(p, i)}</div></span></li>`;
     }).join("");
     $("aMath").innerHTML = `<b>Scoring</b> &middot; ${p.severity.breakdown.map((b) => `${b.label} +${b.weight}`).join(" + ")} = ${p.severity.score} (capped at 10). ${p.kind === "named" ? "Matched hand-authored scenario <b>" + p.id + "</b>." : "Assembled by the rules engine from an entry point and a weakness."}`;
     $("moreBody").innerHTML = `<div class="brk">${paths.map((q) => `<div><span>${q.name}</span><b>${q.severity.score}/10</b></div>`).join("")}</div><p class="anline an" style="margin-top:10px">Severity = sum of per-habit weights on the path, capped at 10. Pins are measured by re-running the rules engine with one habit removed.</p>`;

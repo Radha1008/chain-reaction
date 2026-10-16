@@ -856,34 +856,80 @@ const CHAINS = [
 // Assessment content added in the 2026 redesign. Content only, no logic.
 // ---------------------------------------------------------------------------
 
-// MITRE ATT&CK technique each habit hands an attacker. Every ID and name was
-// checked against attack.mitre.org. null means no technique honestly fits.
-const ATTACK_TECHNIQUES = {
-  public_wifi: ["T1557", "Adversary-in-the-Middle"],
-  qr_scan: ["T1660", "Phishing (Mobile)"],
-  unknown_links: ["T1660", "Phishing (Mobile)"],
-  sideload_apps: ["T1417.001", "Input Capture: Keylogging (Mobile)"],
-  no_verify_sender: ["T1656", "Impersonation"],
-  auto_login_public: ["T1539", "Steal Web Session Cookie"],
-  public_employer: ["T1591.004", "Gather Victim Org Information: Identify Roles"],
-  active_job_search: ["T1593.001", "Search Open Websites/Domains: Social Media"],
-  public_phone: ["T1589", "Gather Victim Identity Information"],
-  shared_recovery_email: ["T1078", "Valid Accounts"],
-  marketplace_listing: ["T1593.001", "Search Open Websites/Domains: Social Media"],
-  dating_profile: ["T1593.001", "Search Open Websites/Domains: Social Media"],
-  password_reuse: ["T1110.004", "Brute Force: Credential Stuffing"],
-  no_email_2fa: ["T1078", "Valid Accounts"],
-  browser_only_passwords: ["T1555.003", "Credentials from Web Browsers"],
-  stale_password: ["T1589.001", "Gather Victim Identity Information: Credentials"],
-  sms_only_2fa: ["T1111", "Multi-Factor Authentication Interception"],
-  same_pin: null,
-  default_router_password: ["T1078.001", "Valid Accounts: Default Accounts"],
-  share_location: ["T1593.001", "Search Open Websites/Domains: Social Media"],
-  old_forgotten_account: ["T1078", "Valid Accounts"],
-  public_email: ["T1589.002", "Gather Victim Identity Information: Email Addresses"],
-  overshare_social: ["T1593.001", "Search Open Websites/Domains: Social Media"],
-  smart_lock_email: ["T1078", "Valid Accounts"],
+// MITRE ATT&CK techniques used anywhere on the site, as [name, tactics, the
+// tactic this site uses it for]. Every entry was checked against
+// attack.mitre.org (ATT&CK v20) on 2026-10-16; re-check with
+// `node tests/check-attack-live.js`. Mobile techniques are marked (Mobile).
+const ATTACK_VERSION = "ATT&CK v20";
+const ATTACK_CATALOG = {
+  "T1040": ["Network Sniffing", "Credential Access, Discovery", "Credential Access"],
+  "T1078": ["Valid Accounts", "Stealth, Persistence, Privilege Escalation, Initial Access", "Initial Access"],
+  "T1078.001": ["Valid Accounts: Default Accounts", "Stealth, Persistence, Privilege Escalation, Initial Access", "Initial Access"],
+  "T1098": ["Account Manipulation", "Persistence, Privilege Escalation", "Persistence"],
+  "T1110.004": ["Brute Force: Credential Stuffing", "Credential Access", "Credential Access"],
+  "T1111": ["Multi-Factor Authentication Interception", "Credential Access", "Credential Access"],
+  "T1114": ["Email Collection", "Collection", "Collection"],
+  "T1417.001": ["Input Capture: Keylogging (Mobile)", "Collection, Credential Access", "Credential Access"],
+  "T1451": ["SIM Card Swap (Mobile)", "Initial Access", "Initial Access"],
+  "T1534": ["Internal Spearphishing", "Lateral Movement", "Lateral Movement"],
+  "T1539": ["Steal Web Session Cookie", "Credential Access", "Credential Access"],
+  "T1555.003": ["Credentials from Password Stores: Credentials from Web Browsers", "Credential Access", "Credential Access"],
+  "T1557": ["Adversary-in-the-Middle", "Credential Access, Collection", "Credential Access"],
+  "T1566": ["Phishing", "Initial Access", "Initial Access"],
+  "T1586.002": ["Compromise Accounts: Email Accounts", "Resource Development", "Resource Development"],
+  "T1589": ["Gather Victim Identity Information", "Reconnaissance", "Reconnaissance"],
+  "T1589.001": ["Gather Victim Identity Information: Credentials", "Reconnaissance", "Reconnaissance"],
+  "T1589.002": ["Gather Victim Identity Information: Email Addresses", "Reconnaissance", "Reconnaissance"],
+  "T1589.003": ["Gather Victim Identity Information: Employee Names", "Reconnaissance", "Reconnaissance"],
+  "T1591.004": ["Gather Victim Org Information: Identify Roles", "Reconnaissance", "Reconnaissance"],
+  "T1593.001": ["Search Open Websites/Domains: Social Media", "Reconnaissance", "Reconnaissance"],
+  "T1593.002": ["Search Open Websites/Domains: Search Engines", "Reconnaissance", "Reconnaissance"],
+  "T1597": ["Search Closed Sources", "Reconnaissance", "Reconnaissance"],
+  "T1598": ["Phishing for Information", "Reconnaissance", "Reconnaissance"],
+  "T1598.003": ["Phishing for Information: Spearphishing Link", "Reconnaissance", "Reconnaissance"],
+  "T1608.005": ["Stage Capabilities: Link Target", "Resource Development", "Resource Development"],
+  "T1626.001": ["Abuse Elevation Control Mechanism: Device Administrator Permissions (Mobile)", "Privilege Escalation", "Privilege Escalation"],
+  "T1655": ["Masquerading (Mobile)", "Defense Evasion", "Defense Evasion"],
+  "T1657": ["Financial Theft", "Impact", "Impact"],
+  "T1660": ["Phishing (Mobile)", "Initial Access", "Initial Access"],
+  "T1684.001": ["Social Engineering: Impersonation", "Stealth", "Stealth"],
 };
+
+// The technique each habit hands an attacker. null means no technique honestly fits.
+const HABIT_ATTACK = {
+  public_wifi: "T1557",
+  qr_scan: "T1660",
+  unknown_links: "T1660",
+  sideload_apps: "T1417.001",
+  no_verify_sender: "T1684.001",
+  auto_login_public: "T1539",
+  public_employer: "T1591.004",
+  active_job_search: "T1593.001",
+  public_phone: "T1589",
+  shared_recovery_email: "T1078",
+  marketplace_listing: "T1593.001",
+  dating_profile: "T1593.001",
+  password_reuse: "T1110.004",
+  no_email_2fa: "T1078",
+  browser_only_passwords: "T1555.003",
+  stale_password: "T1589.001",
+  sms_only_2fa: "T1111",
+  same_pin: null,
+  default_router_password: "T1078.001",
+  share_location: "T1593.001",
+  old_forgotten_account: "T1078",
+  public_email: "T1589.002",
+  overshare_social: "T1593.001",
+  smart_lock_email: "T1078",
+};
+// Why a habit has no technique, shown in place of a code.
+const HABIT_ATTACK_GAP = {
+  same_pin: "Reusing a PIN is a human habit, not an attacker action, so ATT&CK has no technique for it.",
+};
+// [id, name] per habit, the shape the pages read.
+const ATTACK_TECHNIQUES = Object.fromEntries(
+  Object.entries(HABIT_ATTACK).map(([h, id]) => [h, id ? [id, ATTACK_CATALOG[id][0]] : null])
+);
 
 // Where a defender could notice each step (analyst mode).
 const DEFENDER_VIEW = {
@@ -912,6 +958,127 @@ const DEFENDER_VIEW = {
   overshare_social: "Outside your logs. Supplies security-question answers and pretext material.",
   smart_lock_email: "Smart-home app audit log: unlocks or new devices while the owner is away.",
 };
+
+// ATT&CK for every step of every named chain, in step order. A string is a
+// technique ID; { gap } is a step no technique honestly fits, with the reason.
+// The defender note for the same step follows in STEP_DEFEND (null there means
+// "use the note for that step's habit" from DEFENDER_VIEW).
+const STEP_ATTACK = {
+  wifi_cafe_takeover: ["T1557", "T1040", "T1589.001", "T1110.004", "T1078"],
+  forgotten_account_cascade: ["T1078", "T1078", "T1586.002", "T1098", "T1657"],
+  empty_house_signal: ["T1593.001", { gap: "Physical-world inference. ATT&CK models attacks on computer systems and has no technique for spotting an empty house." }, "T1078", "T1566", "T1078"],
+  qr_code_trap: ["T1660", "T1608.005", "T1598", "T1589.001", "T1110.004", "T1078"],
+  shared_laptop_heist: ["T1539", "T1555.003", "T1555.003", { gap: "Physical access to an unlocked machine. ATT&CK begins once someone is at the keyboard, so there is no separate technique for sitting down." }, "T1078"],
+  sim_swap_bypass: ["T1589.002", "T1451", "T1111", "T1098", "T1586.002"],
+  sideloaded_spyware: ["T1655", "T1626.001", "T1417.001", { gap: "Reusing a PIN is a human habit, not an attacker action, so ATT&CK has no technique for it." }, "T1078"],
+  fake_recruiter_chain: ["T1591.004", "T1589.002", "T1684.001", "T1593.001", "T1598.003", "T1078", "T1110.004"],
+  public_profile_puzzle: ["T1591.004", "T1593.001", "T1589", "T1098", "T1110.004", "T1078"],
+  marketplace_pickup: ["T1593.001", { gap: "Finding a person's street from photo backgrounds. ATT&CK's location technique covers organisations, not individuals." }, "T1589", { gap: "An in-person meeting. ATT&CK models attacks on computer systems, not physical contact." }, "T1593.001"],
+  dating_profile_trail: ["T1593.001", "T1593.002", "T1591.004", "T1593.001", { gap: "Finding someone in person. ATT&CK models attacks on computer systems, not physical stalking." }],
+  recovery_email_chain: ["T1589.002", "T1589.001", "T1078", "T1098", "T1114"],
+  overshared_workspace: ["T1591.004", "T1589.003", "T1684.001", "T1566", "T1078", "T1534"],
+  social_engineering_guess: ["T1593.001", "T1589", "T1098", "T1110.004", { gap: "A summary of the chain rather than a separate attacker action." }],
+  breach_dump_lookup: ["T1589.002", "T1597", "T1589.001", "T1110.004", "T1078"],
+};
+
+const STEP_DEFEND = {
+  wifi_cafe_takeover: [null,
+    "Wireless intrusion detection spots rogue access points and ARP spoofing. From the user side, HTTPS everywhere makes the capture useless.",
+    "Nothing to see yet: the password is used later. Breach monitoring and password checks can catch it before it is replayed.",
+    null,
+    "Identity provider: a sign-in from an unfamiliar device or location, or an impossible-travel alert."],
+  forgotten_account_cascade: [null, null,
+    "Identity provider: password and recovery details changed from a new device. The owner gets a 'password changed' email, if they can still read it.",
+    "The old service sends its reset notice to the inbox the attacker now controls, so the owner never sees it.",
+    "Card issuer fraud monitoring: a charge from a merchant or place you never use."],
+  empty_house_signal: [null,
+    "Outside any log. Post trips once you are home.",
+    null, null,
+    "Smart-home app audit log: a sign-in from a new phone, then an unlock while the owner is away."],
+  qr_code_trap: [null,
+    "Newly registered lookalike domains: DNS and certificate-transparency monitoring often flag them within hours.",
+    "A password manager will not autofill on a lookalike domain, which is a warning in itself.",
+    "Nothing visible yet: the stolen password is replayed later.",
+    null,
+    "Sign-in logs across services: one new device signing in to several accounts within a short time."],
+  shared_laptop_heist: [null, null,
+    "On a personal machine, endpoint telemetry can flag the saved-password store being read. Most public machines keep no such log.",
+    "Kiosk software that wipes the session at sign-out removes the step.",
+    "Identity provider: new sign-ins from a library or hotel network after you left."],
+  sim_swap_bypass: [null,
+    "Carrier: a SIM change or port-out request. Some banks and email providers check for a recent SIM change before trusting a text code.",
+    null,
+    "Email provider: a password reset by text from a new device, followed by changed recovery details.",
+    "The real phone loses signal (emergency calls only), often the first and only visible sign."],
+  sideloaded_spyware: [null,
+    "Mobile threat defense or device management: an app asking for device administrator or accessibility access.",
+    "Mobile threat defense flags accessibility-service abuse. On a personal phone, usually nothing is watching.",
+    null,
+    "Whatever the PIN unlocks sees a correct PIN, so nothing looks wrong."],
+  fake_recruiter_chain: [null, null,
+    "Email gateway: an external sender, recruiter-themed lure and a newly registered domain.",
+    null,
+    "Proxy or DNS logs show a lookalike login domain; the password manager refuses to autofill.",
+    null, null],
+  public_profile_puzzle: [null, null,
+    "Outside your logs. The answers are public, so nobody sees them being collected.",
+    "The service: repeated recovery attempts, or a recovery from a new device followed by changed security details.",
+    null,
+    "Several services report new-device sign-ins on the same day."],
+  marketplace_pickup: [null,
+    "Outside any log. Photograph items against a plain background.",
+    null,
+    "Outside any log. Meet in a public place, not at home.",
+    null],
+  dating_profile_trail: [null,
+    "Outside your logs. Use a photo that appears nowhere else.",
+    null, null,
+    "Outside any log. A physical-safety risk; tell a friend where you are meeting."],
+  recovery_email_chain: [null, null,
+    "Email provider: a sign-in with an old password from a new device, and a 'new sign-in' alert to the owner.",
+    null,
+    "Email provider: reset emails read and deleted, or new mail rules, from an unfamiliar session."],
+  overshared_workspace: [null,
+    "Outside your logs. Public org charts and profiles.",
+    "Email gateway: display-name impersonation of a colleague from an outside domain.",
+    null, null,
+    "Mail logs: internal messages with links sent to many colleagues from one account in a short time."],
+  social_engineering_guess: [null,
+    "Outside your logs. The details are public.",
+    "The service: a reset by security questions from a new device, then changed recovery details.",
+    null,
+    "Made-up answers to security questions, stored like passwords, remove the whole chain."],
+  breach_dump_lookup: [null,
+    "Outside your logs. Breach-notification services tell you when your address appears in a dump.",
+    null,
+    "Sign-in logs: a correct but old password arriving from breach-replay infrastructure.",
+    "Identity provider: a successful sign-in from a new device with no MFA challenge."],
+};
+
+// Paths the engine assembles itself (entry habit + weakness, plus an optional
+// signal) have attacker steps too: what follows each entry habit, and how each
+// signal habit ends the chain. [technique or { gap }, defender note].
+const ENTRY_FOLLOWUP = {
+  public_wifi: ["T1040", "Wireless intrusion detection spots rogue access points and ARP spoofing. HTTPS everywhere makes the capture useless."],
+  qr_scan: ["T1608.005", "Newly registered lookalike domains: DNS and certificate-transparency monitoring often flag them within hours."],
+  unknown_links: ["T1608.005", "Newly registered lookalike domains: DNS and certificate-transparency monitoring often flag them within hours."],
+  sideload_apps: ["T1626.001", "Mobile threat defense or device management: an app asking for device administrator or accessibility access."],
+  no_verify_sender: ["T1566", "Email gateway: DMARC failures and lookalike sender domains."],
+  auto_login_public: ["T1078", "Identity provider: activity in your session after you left the machine. Remote sign-out ends it."],
+};
+const SIGNAL_IMPACT = {
+  public_employer: ["T1684.001", "Email gateway: display-name impersonation and lures that name your real team."],
+  active_job_search: ["T1598.003", "Email gateway: recruiter-themed lures linking to newly registered domains."],
+  public_phone: ["T1660", "SMS filtering and mobile threat defense; carriers block some known scam numbers."],
+  marketplace_listing: [{ gap: "Learning someone's neighbourhood through a sale is physical-world reconnaissance of an individual, outside ATT&CK." }, "Outside any log. Meet in a public place."],
+  dating_profile: ["T1593.002", "Outside your logs. Use a photo that appears nowhere else."],
+  share_location: [{ gap: "A physical break-in risk. ATT&CK models attacks on computer systems." }, "Outside any log. Post trips once you are home."],
+  old_forgotten_account: ["T1657", "Card issuer fraud monitoring: a charge from a merchant or place you never use."],
+  public_email: ["T1586.002", "Identity provider: recovery details changed from a new device."],
+  overshare_social: ["T1098", "The service: a reset by security questions from a new device."],
+  smart_lock_email: ["T1078", "Smart-home app audit log: a new phone added, then an unlock while the owner is away."],
+};
+const GENERIC_FINAL_ATTACK = ["T1078", "Identity provider: a sign-in from a new device or country, then the same trick tried on other accounts."];
 
 // Plain action title for each fix, and a rough time it takes (an estimate).
 const FIX_ACTIONS = {

@@ -98,10 +98,15 @@ async function main() {
 
     console.log("\n[4] analyst mode");
     check(await tab.evaluate(`getComputedStyle(document.getElementById('tStrip')).display === 'none'`), "attacker log hidden for everyday visitors");
+    check(await tab.evaluate(`getComputedStyle(document.getElementById('tacStrip')).display === 'none'`), "tactic strip hidden for everyday visitors");
     await tab.evaluate(`document.getElementById('anSwitch').click(); CRAssess.goTab(2);`); await sleep(400);
     check(await tab.evaluate(`getComputedStyle(document.getElementById('tStrip')).display !== 'none' && document.getElementById('cBoard').nextElementSibling.id === 'tStrip'`), "log appears inline right under the case board");
     check(await tab.evaluate(`getComputedStyle(document.getElementById('tStrip')).position === 'static'`), "log never floats over content");
-    check(await tab.evaluate(`document.querySelectorAll('#cBoard .note .code').length > 0 && getComputedStyle(document.querySelector('#cBoard .note .an')).display !== 'none'`), "ATT&CK codes show on the notes");
+    check(await tab.evaluate(`document.querySelectorAll('#cBoard .note').length === document.querySelectorAll('#cBoard .note .code').length && getComputedStyle(document.querySelector('#cBoard .note .an')).display !== 'none'`), "every note on the board has an ATT&CK code, attacker moves included");
+    check(await tab.evaluate(`getComputedStyle(document.getElementById('tacStrip')).display === 'flex' && /v20/.test(document.getElementById('tacStrip').textContent) && document.querySelectorAll('#tacStrip .tac').length >= 3`), "tactic strip shows the path through ATT&CK");
+    await tab.evaluate(`[...document.querySelectorAll('#cBoard .note')].find(n => /attacker move/.test(n.textContent)).click()`);
+    check(await tab.evaluate(`/T1684\.001/.test(document.getElementById('caption').textContent) && /Defender view:/.test(document.getElementById('caption').textContent)`), "an attacker-move step reads out its technique and defender view");
+    check(await tab.evaluate(`!/T1656/.test(document.getElementById('pageFull').innerHTML)`), "no retired T1656 anywhere");
     await tab.evaluate(`CRAssess.goTab(1)`); await sleep(200);
     check(await tab.evaluate(`document.querySelectorAll('#attCov tr').length === 5`), "ATT&CK coverage panel lists the techniques");
     await tab.evaluate(`document.getElementById('anSwitch').click()`);

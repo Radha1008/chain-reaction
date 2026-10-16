@@ -27,6 +27,13 @@ body.analyst .assess .an-flex { display: flex; }
 .assess a.code:hover { background: var(--bg-2); }
 .assess .anline { font: 12px/1.5 var(--font-mono); color: var(--dim); border-left: 2px solid var(--s-iot); padding-left: 8px; margin-top: 4px; }
 .assess .anline b { color: var(--s-iot); font-weight: 700; }
+.assess .anline .code { margin-right: 2px; }
+.assess .code.gap { color: var(--dim); border-style: dashed; }
+body.analyst .assess .tacstrip { display: flex; }
+.assess .tacstrip { flex-wrap: wrap; align-items: center; gap: 6px; margin: 0 0 10px; font: 12px var(--font-mono); }
+.assess .tacstrip .tac-lbl { color: var(--dim); text-transform: uppercase; letter-spacing: 0.08em; font-size: 11px; margin-right: 4px; }
+.assess .tacstrip .tac { color: var(--s-iot); border: 1px solid currentColor; border-radius: 999px; padding: 1px 9px; }
+.assess .tacstrip .tac-arr { color: var(--dim); }
 .answitch { margin-left: auto; display: inline-flex; align-items: center; gap: 10px; background: none; border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px 4px 4px; cursor: pointer; font-size: 13px; color: var(--dim); }
 .answitch .knob { width: 34px; height: 20px; border-radius: 999px; background: var(--bg-2); border: 1px solid var(--line-strong); position: relative; transition: background .2s; }
 .answitch .knob::after { content: ""; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%; background: var(--faint); transition: transform .2s, background .2s; }
@@ -136,6 +143,7 @@ body.analyst .assess .an-flex { display: flex; }
 .assess .note.mine small { color: var(--string); }
 .assess .note.goal { background: var(--paper-ink); color: var(--paper); }
 .assess .note.goal small { color: var(--string); }
+.assess .note.goal .code { color: var(--paper); opacity: 0.85; }
 .assess .note.now { box-shadow: 0 0 0 3px var(--string), 0 8px 18px rgba(0,0,0,.35); }
 .assess .note.pulled { opacity: .35; transform: translateY(18px) rotate(0deg) !important; }
 .assess .note.pulled::before { background: var(--line-strong); }
