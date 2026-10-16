@@ -119,6 +119,7 @@
   let targetKey = "sue";
   let found = new Set();
   let busy = false;
+  let finaled = false;
   let runId = 0;
 
   function print(cls, text) {
@@ -168,6 +169,7 @@
   function loadTarget(key) {
     runId++;
     busy = false;
+    finaled = false;
     targetKey = key;
     found = new Set();
     const t = TARGETS[key];
@@ -198,7 +200,7 @@
         run(c.lines, () => {
           if (c.link) found.add(c.id);
           updateBoard();
-          if (found.size === 4) finale();
+          if (found.size === 4 && !finaled) finale();
         });
       });
       b.dataset.c = c.id;
@@ -212,6 +214,7 @@
   }
 
   function finale() {
+    finaled = true;
     const t = TARGETS[targetKey];
     const end = $("hEndSlot");
     print("ok", "// 4 links found. the chain is complete.");
@@ -485,9 +488,16 @@
 
   function onScroll() {
     if (header) {
-      const compact = window.scrollY > 120;
-      if (compact !== header.classList.contains("compact")) {
+      // Shrinking the sticky header would pull the page up by the height it
+      // loses, and the browser's scroll correction can then undo the shrink,
+      // so the header flickers. Hold the lost height as margin so nothing below
+      // moves, and use separate thresholds so it can't bounce at one point.
+      const was = header.classList.contains("compact");
+      const compact = was ? window.scrollY > 16 : window.scrollY > 160;
+      if (compact !== was) {
+        const before = header.offsetHeight;
         header.classList.toggle("compact", compact);
+        header.style.marginBottom = compact ? before - header.offsetHeight + "px" : "";
         measure();
       }
     }

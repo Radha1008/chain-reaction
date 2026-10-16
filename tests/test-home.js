@@ -26,11 +26,12 @@ const FILE_URL = "file:///" + path.resolve(__dirname, "..", "index.html").split(
 
 async function playTarget(tab, key) {
   await tab.evaluate(`document.querySelector('.h-pick[data-p="${key}"]').click()`);
-  const n = await tab.evaluate(`document.querySelectorAll('#hCmds .h-cmd').length`);
-  for (let i = 0; i < n; i++) {
-    await tab.evaluate(`document.querySelectorAll('#hCmds .h-cmd')[${i}].click()`);
-    await waitFor(tab, `!document.querySelectorAll('#hCmds .h-cmd')[${i}].disabled === false`, 3000);
-    await sleep(700);
+  const ids = await tab.evaluate(`[...document.querySelectorAll('#hCmds .h-cmd')].map(b => b.dataset.c)`);
+  const leftovers = ["skills", "hobbies", "banner"];
+  const order = ids.filter((c) => !leftovers.includes(c)).concat(ids.filter((c) => leftovers.includes(c)));
+  for (const c of order) {
+    await tab.evaluate(`document.querySelector('#hCmds .h-cmd[data-c="${c}"]').click()`);
+    await sleep(900);
   }
   await waitFor(tab, `!!document.querySelector('#hCmds .h-cmd.go')`, 3000, "attack command");
   await tab.evaluate(`document.querySelector('#hCmds .h-cmd.go').click()`);
@@ -40,7 +41,8 @@ async function playTarget(tab, key) {
   return tab.evaluate(`({
     links: document.getElementById('hCount').textContent,
     last: [...document.querySelectorAll('#hOut p')].pop().textContent,
-    twist: !document.getElementById('hFoot').hidden
+    twist: !document.getElementById('hFoot').hidden,
+    once: document.querySelectorAll('#hCmds .h-cmd.go').length === 1 && document.querySelectorAll('#hCmds .h-cmd.fix').length === 1
   })`);
 }
 
@@ -75,6 +77,7 @@ async function main() {
     for (const key of ["sue", "justin", "simone"]) {
       const r = await playTarget(tab, key);
       check(r.links === "4 of 4 links" && /BLOCKED/.test(r.last) && r.twist, `${key}: 4 links, attack, then blocked (last line: "${r.last}")`);
+      check(r.once, `${key}: attack and defender commands appear once, even after the leftover commands are clicked`);
     }
     await tab.evaluate(`document.querySelector('.h-pick[data-p="sue"]').click()`);
     await tab.evaluate(`document.querySelectorAll('#hCmds .h-cmd')[0].click()`);
@@ -95,6 +98,17 @@ async function main() {
     await sleep(1200);
     check(await tab.evaluate(`document.querySelector('#gSteps .g-step[aria-current=step]').textContent.includes("Where you're exposed")`), "scrolling to the map lights step 3");
     check(await tab.evaluate(`document.querySelector('.topbar').classList.contains('compact')`), "header goes compact after scrolling");
+    // shrinking the header must not move the page (that jump is what made it flicker)
+    await tab.evaluate(`window.scrollTo(0, 0)`); await sleep(300);
+    const pos = `Math.round(document.getElementById('hMap').getBoundingClientRect().top + scrollY)`;
+    const before = await tab.evaluate(pos);
+    await tab.evaluate(`window.scrollTo(0, 200)`); await sleep(300);
+    const after = await tab.evaluate(pos);
+    check(await tab.evaluate(`document.querySelector('.topbar').classList.contains('compact')`) && before === after, `page does not jump when the header shrinks (${before}px -> ${after}px)`);
+    await tab.evaluate(`window.scrollTo(0, 120)`); await sleep(300);
+    check(await tab.evaluate(`document.querySelector('.topbar').classList.contains('compact')`), "header stays compact just under the shrink point (no bouncing)");
+    await tab.evaluate(`document.querySelector('[data-gjump="hMap"]').click()`);
+    await sleep(1200);
     const headerOk = await tab.evaluate(`(() => { const h = document.querySelector('.topbar').getBoundingClientRect().bottom; return document.getElementById('hMap').getBoundingClientRect().top >= h - 2; })()`);
     check(headerOk, "jumped-to section is not hidden under the sticky header");
     await tab.evaluate(`document.querySelector('.navlink[data-page="quick"]').click()`);
@@ -111,7 +125,23 @@ async function main() {
     check(await tab.evaluate(`document.getElementById('gGuide').classList.contains('collapsed') && !document.getElementById('gShow').offsetParent === false`), "guide can be hidden and offers Show again");
     await tab.evaluate(`document.getElementById('gShow').click()`);
 
-    console.log("\n[5] phone width and privacy");
+    console.log("\n[5] scenario carousel arrows stay off the text");
+    for (const w of [1280, 390]) {
+      await tab.send("Emulation.setDeviceMetricsOverride", { width: w, height: 844, deviceScaleFactor: 1, mobile: w < 600 });
+      await tab.evaluate(`document.querySelector('.navlink[data-page="home"]').click(); document.querySelector('[data-modal="libraryModal"]').click()`);
+      await sleep(400);
+      const hit = await tab.evaluate(`(() => {
+        const arrows = [...document.querySelectorAll('#libraryCarousel .carousel-arrow')].map(a => a.getBoundingClientRect());
+        const card = document.querySelector('#libraryCarousel .library-card').getBoundingClientRect();
+        return arrows.some(a => a.right > card.left + 1 && a.left < card.right - 1);
+      })()`);
+      check(!hit, `arrows sit beside the scenario card, not on it, at ${w}px`);
+      await tab.evaluate(`document.querySelector('#libraryModal .modal-close').click()`);
+      await sleep(200);
+    }
+    await tab.send("Emulation.setDeviceMetricsOverride", { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
+
+    console.log("\n[6] phone width and privacy");
     await tab.evaluate(`document.querySelector('.navlink[data-page="home"]').click()`);
     await tab.send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
     await sleep(400);

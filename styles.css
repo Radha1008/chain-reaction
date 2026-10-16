@@ -1388,6 +1388,7 @@ body {
   position: relative;
   max-width: 560px;
   margin: 0 auto;
+  padding-inline: 48px;
 }
 
 .carousel-wide {
@@ -1451,16 +1452,16 @@ body {
 }
 
 .carousel-arrow-prev {
-  left: 8px;
+  left: 0;
 }
 
 .carousel-arrow-next {
-  right: 8px;
+  right: 0;
 }
 
 @media (max-width: 640px) {
-  .carousel-arrow-prev { left: 4px; }
-  .carousel-arrow-next { right: 4px; }
+  .carousel { padding-inline: 38px; }
+  .carousel-arrow { width: 32px; height: 32px; }
 }
 
 .carousel-dots {
