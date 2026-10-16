@@ -42,6 +42,8 @@ html { scroll-padding-top: var(--chrome-offset); }
 .g-step[aria-current="step"] { color: var(--text); border-color: var(--accent); background: var(--accent-soft); }
 .g-step[aria-current="step"] .g-step-n { background: var(--accent); color: var(--on-accent); }
 .g-step.done .g-step-n { background: var(--success-soft); color: var(--success); }
+.g-step:disabled { opacity: 0.45; cursor: not-allowed; }
+.g-step:disabled:hover { color: var(--text-dim); border-color: var(--border-soft); }
 .g-toggle { margin-left: auto; background: none; border: 0; color: var(--text-faint); font: inherit; font-size: 12px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; padding: 4px 0; }
 .g-toggle:hover { color: var(--text); }
 .g-show { display: none; }

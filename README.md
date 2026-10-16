@@ -10,39 +10,57 @@ Most security advice is a list of rules with no visible cause and effect. Chain 
 
 ## Who it is for
 
-Everyday people, not security teams. It was built with women facing harassment, impersonation and scams in mind, since those chains usually start from public profile details rather than from malware.
+Everyday people first, without leaving security professionals out. It was built with women facing harassment, impersonation and scams in mind, since those chains usually start from public profile details rather than from malware. An analyst mode adds the technical layer for people who work in security.
 
 ## How it works
 
-- **Recon terminal on the home page.** Play the attacker for 30 seconds against one of three made-up targets, each showing a different attack: Sue Doe (phishing), Justin Case (an old breached password plus a smart lock) and Simone Swap (a SIM swap). Click commands, watch the chain build, then play the defender and break it.
-- **A guide on every page.** A short "what this page does" line and numbered steps that follow you as you scroll, so someone with no security background always knows where they are and what to do next.
-- **Plain-English jargon.** Terms like phishing, 2FA and SIM swap are tappable and explain themselves.
-- **Field notes.** Small, sourced facts from the FBI, FTC, FCC, Microsoft Research and Lockheed Martin, one per section.
-- **Deterministic rules engine.** Every chain, score and recommendation comes from hand-written rules in `data.js`. The same inputs always produce the same output. There is no model call and nothing is generated at runtime.
-- **Guided job-seeker walkthrough.** A step-by-step scenario that follows one person through a fake recruiter approach and shows each link as it forms.
-- **Attacker view.** The same profile rewritten as what an attacker sees and can use, instead of what the defender is told to fix.
-- **Simulate MFA.** Toggle multi-factor authentication on and watch which paths survive and which collapse.
-- **Cipher.** A rule-based assistant that explains terms and the current chain. Rule-based, not a chatbot.
+- **Home: a recon terminal.** Play the attacker for 30 seconds against one of three made-up targets, each showing a different attack: Sue Doe (phishing), Justin Case (an old breached password plus a smart lock) and Simone Swap (a SIM swap). Click commands, watch the chain build, then play the defender and break it.
+- **Quick check: one ordinary day.** Six moments from morning to night, from cafe wifi to a holiday post. Dee Fault, the victim, panics as their exposure map lights up, while Phil Ishing, the attacker, pins each "yes" to his board. The result is a row of dominoes: tap one of your habits to pull it out and watch the fall stop. You leave with one takeaway and one action.
+- **Full assessment: four steps.**
+  1. *Pick your habits*, one area of your life at a time, with the map filling in.
+  2. *Your case board*: the attack pinned up like evidence, joined by red string. Tap a note to read the step; pull a pin and watch the string go slack.
+  3. *Your unchain plan*: the fewest changes that close the most paths, each with a free official guide. Tick one off and a link in your chain snaps, until the case is closed.
+  4. *If it already happened*: the official places to report it and get help.
+- **A live case file.** One line that keeps score: habits, attack paths, who is most likely to come after you, and the best first fix.
+- **Analyst mode.** One switch adds MITRE ATT&CK technique IDs (each checked against attack.mitre.org), a Defender view of where each step could be detected, an ATT&CK coverage panel, the scoring math, and an attacker log that narrates each step.
+- **A guide on every page**, plain-English jargon pop-ups, and **field notes**: small, sourced facts from the FBI, FTC, FCC, Microsoft Research and Lockheed Martin.
+- **Deterministic rules engine.** Every chain, score and recommendation comes from hand-written content in `data.js` and the rules in `engine.js`. The same inputs always produce the same output. There is no model call and nothing is generated at runtime.
+- **Cipher.** A rule-based assistant that explains terms and adds habits to your assessment. Rule-based, not a chatbot.
+
+## Sources and links
+
+Every guide and recovery link points at a free, official or non-profit source (CISA, FTC, FCC, FBI IC3, the National Cybersecurity Alliance, NNEDV, Have I Been Pwned). Each one was loaded in a real browser to confirm it works and is current. There are no sponsored or affiliate links, and the advice names no commercial products.
 
 ## Privacy
 
-Everything runs in the browser. No accounts, no uploads, no tracking, no analytics, and nothing is stored. The demo profiles are fictional. Close the tab and there is nothing left behind.
+Everything runs in the browser. No accounts, no uploads, no tracking, no analytics, and nothing is stored. Fonts are bundled, so the page makes no third-party requests. The people in the scenarios are fictional. Close the tab and there is nothing left behind.
 
 ## Limitations
 
 - Scenarios are hand-authored, so coverage is limited to what has been written.
-- The guided walkthrough only covers the job-seeker chain.
+- Fix times are rough estimates, not measurements.
 - It is educational. It is not a professional risk assessment and should not be treated as one.
 
 ## Background
 
 Chain Reaction started in September 2026 as my project for the Elevate Women Global Hackathon. I've since kept building it as an independent personal project.
 
-Built with Claude Code. I directed every decision: scope, scenarios, rules, copy and design. The logo art was generated with Gemini. No third-party libraries are used. The Fraunces font is bundled in `fonts/` under the SIL Open Font License (see `fonts/OFL.txt`), so the page still makes no third-party network requests.
+Built with Claude Code. I directed every decision: scope, scenarios, rules, copy and design. The logo art was generated with Gemini. No third-party libraries are used. IBM Plex Sans, IBM Plex Mono and Fraunces are bundled in `fonts/` under the SIL Open Font License (see `fonts/OFL-IBMPlex.txt` and `fonts/OFL-Fraunces.txt`).
+
+## Project layout
+
+| File | What it holds |
+|---|---|
+| `data.js` | All content: habits, scenarios, ATT&CK mappings, guides, recovery links |
+| `engine.js` | The rules: attack paths, severity, fixes, the unchain plan |
+| `home.js` / `home.css` | Home page, page guide, glossary pop-ups |
+| `assess.js` / `assess.css` | Quick check and Full assessment |
+| `app.js` | Theme, routing, modals, scenario library, Cipher |
+| `styles.css` | Site-wide styles and the Espresso / Walnut colour tokens |
 
 ## Running the tests
 
-The tests drive the real page in headless Chrome over the DevTools protocol. They need Node 22+ and Chrome, and have no npm dependencies.
+The browser tests drive the real page in headless Chrome over the DevTools protocol. They need Node 22+ and Chrome, and have no npm dependencies.
 
 ```
 npm test
@@ -54,7 +72,6 @@ If Chrome isn't in a standard location, set `CHROME_PATH` first.
 
 - More women-focused scenarios, especially harassment and impersonation chains.
 - A Quick exit button.
-- Slower pacing through the walkthrough.
 - People-aware risk modeling that accounts for who else is in the picture, not just the account.
 
 ## License

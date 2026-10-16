@@ -100,9 +100,9 @@ async function main() {
     await tab.evaluate(`document.querySelector('.navlink[data-page="quick"]').click()`);
     await sleep(300);
     check(await tab.evaluate(`document.getElementById('gPage').textContent.startsWith('Quick check:') && document.querySelectorAll('#gSteps .g-step').length === 3`), "quick check guide replaces the home guide");
-    await tab.evaluate(`document.querySelectorAll('.quick-q').forEach(r => r.querySelector('.quick-opt[data-answer="yes"]').click()); document.getElementById('quickRunBtn').click();`);
+    for (let i = 0; i < 6; i++) await tab.evaluate(`document.querySelector('#pageQuick .yn [data-a="yes"]').click(); document.getElementById('qNext').click();`);
     await sleep(300);
-    check(await tab.evaluate(`document.querySelector('#gSteps .g-step[aria-current=step]').textContent.includes('See your result')`), "showing the result moves the quick guide to step 2");
+    check(await tab.evaluate(`document.querySelector('#gSteps .g-step[aria-current=step]').textContent.includes('Your dominoes')`), "showing the result moves the quick guide to step 2");
     check(await tab.evaluate(`!/12 more/.test(document.body.textContent)`), "no stale '12 more habits' copy");
     await tab.evaluate(`document.querySelector('.navlink[data-page="full"]').click()`);
     await sleep(300);

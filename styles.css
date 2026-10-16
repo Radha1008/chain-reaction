@@ -1,3 +1,9 @@
+/* IBM Plex, bundled in fonts/ under the SIL Open Font License (fonts/OFL-IBMPlex.txt). */
+@font-face { font-family: "IBM Plex Sans"; font-style: normal; font-weight: 400 700; font-display: swap; src: url("fonts/IBMPlexSans-latin.woff2") format("woff2"); }
+@font-face { font-family: "IBM Plex Mono"; font-style: normal; font-weight: 400; font-display: swap; src: url("fonts/IBMPlexMono-400-latin.woff2") format("woff2"); }
+@font-face { font-family: "IBM Plex Mono"; font-style: normal; font-weight: 500; font-display: swap; src: url("fonts/IBMPlexMono-500-latin.woff2") format("woff2"); }
+@font-face { font-family: "IBM Plex Mono"; font-style: normal; font-weight: 600; font-display: swap; src: url("fonts/IBMPlexMono-600-latin.woff2") format("woff2"); }
+
 /* ============================================================
    DESIGN TOKENS: two themes
    Ink (dark, default): deep aubergine-black, never pure black.
@@ -12,55 +18,66 @@
   color-scheme: dark;
 
   /* Ink: deep aubergine-black, never a void */
-  --bg: #151018;
-  --bg-elevated: #1d1622;
-  --bg-card: #231b28;
-  --bg-card-hover: #2c2232;
-  --border: #77667f;
-  --border-soft: #2a2130;
-  --border-strong: #82708c;
-  --text: #f3ecef;
-  --text-dim: #b9acb6;
-  --text-faint: #968a95;
+  --bg: #16100d;
+  --bg-elevated: #1d1511;
+  --bg-card: #221914;
+  --bg-card-hover: #2b201a;
+  --border: #7d685b;
+  --border-soft: #3c2c24;
+  --border-strong: #8b7568;
+  --text: #f3e9e2;
+  --text-dim: #bba89c;
+  --text-faint: #9a877b;
 
   /* Signature accent: the attack path, and nothing else */
-  --accent: #ef5f85;
-  --accent-2: #c9295a;
-  --accent-soft: rgba(239, 95, 133, 0.14);
-  --accent-glow: rgba(239, 95, 133, 0.32);
-  --accent-deep: #e0426f;
-  --on-accent: #1b0a12;
+  --accent: #d56951;
+  --accent-2: #b54a35;
+  --accent-soft: rgba(212, 100, 76, 0.15);
+  --accent-glow: rgba(212, 100, 76, 0.32);
+  --accent-deep: #c0533d;
+  --on-accent: #1a0d08;
 
   /* Counter-colour: defences and the broken chain */
-  --sage: #4dd4b0;
-  --success: #4dd4b0;
-  --success-soft: rgba(77, 212, 176, 0.15);
-  --on-success: #04201a;
+  --sage: #86bfa7;
+  --success: #86bfa7;
+  --success-soft: rgba(134, 191, 167, 0.14);
+  --on-success: #0d1a14;
 
-  --gold: #e3b341;
-  --danger: #f2738f;
+  --gold: #c58a5c;
+  --danger: #e07a64;
 
   /* Counter-band: an inset light editorial section */
-  --paper: #f2ece2;
-  --paper-text: #241c16;
-  --paper-dim: #5c5148;
-  --paper-faint: #6d6257;
-  --paper-border: #ddd3c5;
-  --paper-accent: #b01e4d;
+  --paper: #efe4d3;
+  --paper-text: #2a1c14;
+  --paper-dim: #5c4a3e;
+  --paper-faint: #6d5a4c;
+  --paper-border: #dccdb8;
+  --paper-accent: #8f2f22;
 
   --shadow-strong: rgba(0, 0, 0, 0.62);
   --shadow-soft: rgba(0, 0, 0, 0.45);
-  --grid-line: rgba(255, 255, 255, 0.028);
+  --grid-line: rgba(255, 240, 230, 0.028);
   --grid-fade: 1;
-  --chrome-veil: rgba(21, 16, 24, 0.88);
+  --chrome-veil: rgba(22, 16, 13, 0.88);
 
-  --stage-initial_access: #e3b341;
-  --stage-credential: #ef5f85;
-  --stage-exposure: #e07a5f;
-  --stage-iot: #7fa8c9;
-  --stage-behavior: #4dd4b0;
-  --term-bg: #0f0b12;
-  --term-fg: #e9e0e6;
+  --stage-initial_access: #a99a6b;
+  --stage-credential: #d4644c;
+  --stage-exposure: #c58a5c;
+  --stage-iot: #8fa9be;
+  --stage-behavior: #86bfa7;
+  --term-bg: #110c0a;
+  --term-fg: #e9dcd2;
+  --bg-recess: #1d1511;
+  --skin: #f3e9e2;
+  --hood: #0a0706;
+  --hood-edge: #4a3a31;
+  --cork: #3a2a1f;
+  --cork-dot: rgba(0, 0, 0, 0.18);
+  --cork-rim: #2c1f17;
+  --note-paper: #efe4d3;
+  --note-ink: #2a1c14;
+  --note-dim: #6a594c;
+  --string: #d4644c;
 }
 
 /* Paper is the default when the system asks for light and the
@@ -69,105 +86,127 @@
   :root:not([data-theme="ink"]) {
     color-scheme: light;
   /* Paper: warm off-white stock, aubergine ink */
-  --bg: #f6f2ec;
-  --bg-elevated: #fffdf9;
-  --bg-card: #fffdf9;
-  --bg-card-hover: #f0e9e0;
-  --border: #8a7a81;
-  --border-soft: #e8e0d5;
-  --border-strong: #6d5c66;
-  --text: #1f1722;
-  --text-dim: #574c5c;
-  --text-faint: #6f6475;
+  --bg: #f4ede4;
+  --bg-elevated: #fffaf3;
+  --bg-card: #fffaf3;
+  --bg-card-hover: #ece2d5;
+  --border: #8b7666;
+  --border-soft: #ddd0bf;
+  --border-strong: #6e5b4e;
+  --text: #2a1c14;
+  --text-dim: #6a594c;
+  --text-faint: #746256;
 
-  --accent: #b01e4d;
-  --accent-2: #8a1540;
-  --accent-soft: rgba(176, 30, 77, 0.10);
-  --accent-glow: rgba(176, 30, 77, 0.24);
-  --accent-deep: #8a1540;
-  --on-accent: #fff6f8;
-  --gold: #8a6108;
-  --sage: #0f7a63;
+  --accent: #8f2f22;
+  --accent-2: #722519;
+  --accent-soft: rgba(143, 47, 34, 0.10);
+  --accent-glow: rgba(143, 47, 34, 0.22);
+  --accent-deep: #722519;
+  --on-accent: #fff6f0;
+  --gold: #8a5330;
+  --sage: #2e6b52;
 
-  --danger: #a1123f;
-  --success: #0f7a63;
-  --success-soft: rgba(15, 122, 99, 0.12);
+  --danger: #8f2f22;
+  --success: #2e6b52;
+  --success-soft: rgba(46, 107, 82, 0.12);
   --on-success: #ffffff;
 
   /* Counter-band: the editorial section flips to ink on paper */
-  --paper: #1f1826;
-  --paper-text: #f3ecef;
-  --paper-dim: #c0b3bd;
-  --paper-faint: #a3959f;
-  --paper-border: #3a2f44;
-  --paper-accent: #ef5f85;
+  --paper: #221914;
+  --paper-text: #f3e9e2;
+  --paper-dim: #c9b6a8;
+  --paper-faint: #b09d90;
+  --paper-border: #3c2c24;
+  --paper-accent: #d4644c;
 
-  --shadow-strong: rgba(49, 35, 58, 0.18);
-  --shadow-soft: rgba(49, 35, 58, 0.12);
-  --grid-line: rgba(31, 23, 34, 0.05);
+  --shadow-strong: rgba(42, 28, 20, 0.18);
+  --shadow-soft: rgba(42, 28, 20, 0.12);
+  --grid-line: rgba(42, 28, 20, 0.05);
   --grid-fade: 0.55;
-  --chrome-veil: rgba(246, 242, 236, 0.9);
+  --chrome-veil: rgba(244, 237, 228, 0.9);
 
-  --stage-initial_access: #8a6108;
-  --stage-credential: #b01e4d;
-  --stage-exposure: #a03f22;
-  --stage-iot: #2f6489;
-  --stage-behavior: #0f7a63;
-  --term-bg: #fffdf9;
-  --term-fg: #1f1722;
-  }
+  --stage-initial_access: #6e6236;
+  --stage-credential: #8f2f22;
+  --stage-exposure: #8a5330;
+  --stage-iot: #3d5f78;
+  --stage-behavior: #2e6b52;
+  --term-bg: #fffaf3;
+  --term-fg: #2a1c14;
+  --bg-recess: #ece2d5;
+  --skin: #2a1c14;
+  --hood: #2a1c14;
+  --hood-edge: #2a1c14;
+  --cork: #c9a982;
+  --cork-dot: rgba(60, 40, 20, 0.16);
+  --cork-rim: #b0906b;
+  --note-paper: #fffaf3;
+  --note-ink: #2a1c14;
+  --note-dim: #6a594c;
+  --string: #8f2f22;
+}
 }
 
 /* An explicit choice from the header toggle always wins. */
 :root[data-theme="paper"] {
   color-scheme: light;
   /* Paper: warm off-white stock, aubergine ink */
-  --bg: #f6f2ec;
-  --bg-elevated: #fffdf9;
-  --bg-card: #fffdf9;
-  --bg-card-hover: #f0e9e0;
-  --border: #8a7a81;
-  --border-soft: #e8e0d5;
-  --border-strong: #6d5c66;
-  --text: #1f1722;
-  --text-dim: #574c5c;
-  --text-faint: #6f6475;
+  --bg: #f4ede4;
+  --bg-elevated: #fffaf3;
+  --bg-card: #fffaf3;
+  --bg-card-hover: #ece2d5;
+  --border: #8b7666;
+  --border-soft: #ddd0bf;
+  --border-strong: #6e5b4e;
+  --text: #2a1c14;
+  --text-dim: #6a594c;
+  --text-faint: #746256;
 
-  --accent: #b01e4d;
-  --accent-2: #8a1540;
-  --accent-soft: rgba(176, 30, 77, 0.10);
-  --accent-glow: rgba(176, 30, 77, 0.24);
-  --accent-deep: #8a1540;
-  --on-accent: #fff6f8;
-  --gold: #8a6108;
-  --sage: #0f7a63;
+  --accent: #8f2f22;
+  --accent-2: #722519;
+  --accent-soft: rgba(143, 47, 34, 0.10);
+  --accent-glow: rgba(143, 47, 34, 0.22);
+  --accent-deep: #722519;
+  --on-accent: #fff6f0;
+  --gold: #8a5330;
+  --sage: #2e6b52;
 
-  --danger: #a1123f;
-  --success: #0f7a63;
-  --success-soft: rgba(15, 122, 99, 0.12);
+  --danger: #8f2f22;
+  --success: #2e6b52;
+  --success-soft: rgba(46, 107, 82, 0.12);
   --on-success: #ffffff;
 
   /* Counter-band: the editorial section flips to ink on paper */
-  --paper: #1f1826;
-  --paper-text: #f3ecef;
-  --paper-dim: #c0b3bd;
-  --paper-faint: #a3959f;
-  --paper-border: #3a2f44;
-  --paper-accent: #ef5f85;
+  --paper: #221914;
+  --paper-text: #f3e9e2;
+  --paper-dim: #c9b6a8;
+  --paper-faint: #b09d90;
+  --paper-border: #3c2c24;
+  --paper-accent: #d4644c;
 
-  --shadow-strong: rgba(49, 35, 58, 0.18);
-  --shadow-soft: rgba(49, 35, 58, 0.12);
-  --grid-line: rgba(31, 23, 34, 0.05);
+  --shadow-strong: rgba(42, 28, 20, 0.18);
+  --shadow-soft: rgba(42, 28, 20, 0.12);
+  --grid-line: rgba(42, 28, 20, 0.05);
   --grid-fade: 0.55;
-  --chrome-veil: rgba(246, 242, 236, 0.9);
+  --chrome-veil: rgba(244, 237, 228, 0.9);
 
-  --stage-initial_access: #8a6108;
-  --stage-credential: #b01e4d;
-  --stage-exposure: #a03f22;
-  --stage-iot: #2f6489;
-  --stage-behavior: #0f7a63;
-  --term-bg: #fffdf9;
-  --term-fg: #1f1722;
+  --stage-initial_access: #6e6236;
+  --stage-credential: #8f2f22;
+  --stage-exposure: #8a5330;
+  --stage-iot: #3d5f78;
+  --stage-behavior: #2e6b52;
+  --term-bg: #fffaf3;
+  --term-fg: #2a1c14;
+  --bg-recess: #ece2d5;
+  --skin: #2a1c14;
+  --hood: #2a1c14;
+  --hood-edge: #2a1c14;
+  --cork: #c9a982;
+  --cork-dot: rgba(60, 40, 20, 0.16);
+  --cork-rim: #b0906b;
+  --note-paper: #fffaf3;
+  --note-ink: #2a1c14;
+  --note-dim: #6a594c;
+  --string: #8f2f22;
 }
 
 * {
@@ -185,9 +224,9 @@ html {
 /* System stacks only. No CDN, no webfont request: the
    "no network calls" privacy claim has to stay literally true. */
 :root {
-  --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, "Times New Roman", Times, serif;
-  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI Variable Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-mono: ui-monospace, "Cascadia Mono", "Segoe UI Mono", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --font-display: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-sans: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI Variable Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", "Segoe UI Mono", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 }
 
 body {

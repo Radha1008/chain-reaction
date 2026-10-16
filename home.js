@@ -394,18 +394,28 @@
       ],
     },
     quick: {
-      text: "<b>Quick check:</b> six yes-or-no questions about things you actually do. You get a risk score, the chain your answers form, and the first habit to fix.",
+      text: "<b>Quick check:</b> six moments from one ordinary day. Say which sound like you, and you get your chain as a row of dominoes, the one to pull out, and a takeaway to keep.",
       steps: [
-        { label: "Answer 6 questions", target: "quickQuestions" },
-        { label: "See your result", target: "quickResult" },
-        { label: "Go deeper", action: () => { const b = $("quickToFullBtn"); const r = $("quickResult"); if (b && r && !r.hidden) b.click(); else clickNav("full"); } },
+        { label: "Walk through your day", target: "qAsk" },
+        { label: "Your dominoes", target: "qResult", disabled: () => !resultShown() },
+        { label: "Your one thing", target: "take", disabled: () => !resultShown() },
       ],
     },
     full: {
-      text: "<b>Full assessment:</b> tick the habits that are true for you and run the simulation. Then explore every attack path, flip to the attacker's view, and test which single fix breaks the most paths. The three numbered tabs below walk you through it.",
-      steps: [],
+      text: "<b>Full assessment:</b> four steps. Pick your habits one area at a time, see them pinned on a case board, get your unchain plan, and know where to go if something already happened.",
+      steps: [
+        { label: "Pick your habits", action: () => goAssessTab(1) },
+        { label: "Your case board", action: () => goAssessTab(2), disabled: () => !assessHasPaths() },
+        { label: "Your unchain plan", action: () => goAssessTab(3), disabled: () => !assessHasPaths() },
+        { label: "If it already happened", action: () => goAssessTab(4), disabled: () => !assessHasPaths() },
+      ],
     },
   };
+
+  // the Quick check and Full assessment live in assess.js
+  function resultShown() { return !!(window.CRAssess && window.CRAssess.resultShown); }
+  function assessHasPaths() { return !!(window.CRAssess && window.CRAssess.hasPaths); }
+  function goAssessTab(n) { if (window.CRAssess) window.CRAssess.goTab(n); }
 
   function renderGuide(page) {
     currentPage = page;
@@ -424,6 +434,7 @@
       b.type = "button";
       b.className = "g-step";
       b.innerHTML = `<span class="g-step-n">${i + 1}</span>${s.label}`;
+      b.disabled = !!(s.disabled && s.disabled());
       b.addEventListener("click", () => {
         if (s.action) return s.action();
         const el = $(s.target);
@@ -455,8 +466,9 @@
         if (el && el.getBoundingClientRect().top <= line) idx = i;
       });
     } else if (currentPage === "quick") {
-      const r = $("quickResult");
-      idx = r && !r.hidden ? 1 : 0;
+      idx = resultShown() ? 1 : 0;
+    } else if (currentPage === "full") {
+      idx = window.CRAssess ? window.CRAssess.tab - 1 : 0;
     }
     steps.forEach((b, i) => {
       if (i === idx) b.setAttribute("aria-current", "step");
@@ -494,10 +506,8 @@
         if (el) el.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
       })
     );
-    const result = $("quickResult");
-    if (result && "MutationObserver" in window) {
-      new MutationObserver(updateSteps).observe(result, { attributes: true, attributeFilter: ["hidden"] });
-    }
+    // assess.js announces state changes (result shown, tab changed, paths found)
+    document.addEventListener("cr:assess", () => { if (currentPage !== "home") renderGuide(currentPage); });
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", () => {
       measure();

@@ -169,7 +169,7 @@ const HABITS = [
     primaryThreat: "automated_credential_attacker",
     shortName: "Password Reuse",
     weaknessStep: "Because you reuse that password elsewhere, whatever was just captured now unlocks other accounts too.",
-    fixAdvice: "Use a password manager (Bitwarden, 1Password) to generate and store a unique password for every account. That one change alone means a leak anywhere no longer unlocks everything else.",
+    fixAdvice: "Use a password manager (several reputable ones are free) to generate and store a unique password for every account. That one change alone means a leak anywhere no longer unlocks everything else.",
   },
   {
     id: "no_email_2fa",
@@ -850,4 +850,149 @@ const CHAINS = [
       "If you reused or barely modified it since, they're in.",
     ],
   },
+];
+
+// ---------------------------------------------------------------------------
+// Assessment content added in the 2026 redesign. Content only, no logic.
+// ---------------------------------------------------------------------------
+
+// MITRE ATT&CK technique each habit hands an attacker. Every ID and name was
+// checked against attack.mitre.org. null means no technique honestly fits.
+const ATTACK_TECHNIQUES = {
+  public_wifi: ["T1557", "Adversary-in-the-Middle"],
+  qr_scan: ["T1660", "Phishing (Mobile)"],
+  unknown_links: ["T1660", "Phishing (Mobile)"],
+  sideload_apps: ["T1417.001", "Input Capture: Keylogging (Mobile)"],
+  no_verify_sender: ["T1656", "Impersonation"],
+  auto_login_public: ["T1539", "Steal Web Session Cookie"],
+  public_employer: ["T1591.004", "Gather Victim Org Information: Identify Roles"],
+  active_job_search: ["T1593.001", "Search Open Websites/Domains: Social Media"],
+  public_phone: ["T1589", "Gather Victim Identity Information"],
+  shared_recovery_email: ["T1078", "Valid Accounts"],
+  marketplace_listing: ["T1593.001", "Search Open Websites/Domains: Social Media"],
+  dating_profile: ["T1593.001", "Search Open Websites/Domains: Social Media"],
+  password_reuse: ["T1110.004", "Brute Force: Credential Stuffing"],
+  no_email_2fa: ["T1078", "Valid Accounts"],
+  browser_only_passwords: ["T1555.003", "Credentials from Web Browsers"],
+  stale_password: ["T1589.001", "Gather Victim Identity Information: Credentials"],
+  sms_only_2fa: ["T1111", "Multi-Factor Authentication Interception"],
+  same_pin: null,
+  default_router_password: ["T1078.001", "Valid Accounts: Default Accounts"],
+  share_location: ["T1593.001", "Search Open Websites/Domains: Social Media"],
+  old_forgotten_account: ["T1078", "Valid Accounts"],
+  public_email: ["T1589.002", "Gather Victim Identity Information: Email Addresses"],
+  overshare_social: ["T1593.001", "Search Open Websites/Domains: Social Media"],
+  smart_lock_email: ["T1078", "Valid Accounts"],
+};
+
+// Where a defender could notice each step (analyst mode).
+const DEFENDER_VIEW = {
+  public_wifi: "Hard to see from the user side. HTTPS-only and a VPN remove the step; identity-provider logs may show one session used from two networks.",
+  qr_scan: "Mobile URL filtering and newly-registered-domain alerts. Users reporting the sticker is often the first signal.",
+  unknown_links: "SMS filtering and mobile threat defense; DNS logs show lookups of freshly registered lookalike domains.",
+  sideload_apps: "MDM or mobile threat defense flags apps from unknown sources and accessibility-service abuse.",
+  no_verify_sender: "Email gateway: display-name spoofing, lookalike domains and DMARC failures.",
+  auto_login_public: "Identity-provider session logs: an old session still alive on a public device. Remote sign-out clears it.",
+  public_employer: "Outside your logs: open-source exposure. Mitigated by awareness training and less org-chart detail in public.",
+  active_job_search: "Outside your logs. Recruiter-themed lures show up in email gateway detections.",
+  public_phone: "Outside your logs. Feeds SMS phishing and SIM-swap pretexting.",
+  shared_recovery_email: "Identity provider: a burst of password-reset emails into one inbox across many services.",
+  marketplace_listing: "Outside your logs. A doxxing and physical-safety risk more than a SOC alert.",
+  dating_profile: "Outside your logs. Reverse image search links the identities.",
+  password_reuse: "Sign-in logs: spikes of failed logins across accounts, then a success from breach-replay infrastructure.",
+  no_email_2fa: "Identity provider: a successful sign-in from a new device or country with no MFA challenge.",
+  browser_only_passwords: "Endpoint telemetry: unusual processes reading the browser credential store.",
+  stale_password: "Breach monitoring flags the address in a dump. Force a reset.",
+  sms_only_2fa: "Carrier SIM-change event followed closely by an SMS-verified login.",
+  same_pin: "No log source. PIN reuse stays invisible until a device is lost.",
+  default_router_password: "Router admin logins; scanners flag firmware still using default credentials.",
+  share_location: "Outside your logs. Gives timing for physical or social attacks.",
+  old_forgotten_account: "Nobody is watching this account's alerts at all.",
+  public_email: "Outside your logs. Feeds phishing and credential-stuffing target lists.",
+  overshare_social: "Outside your logs. Supplies security-question answers and pretext material.",
+  smart_lock_email: "Smart-home app audit log: unlocks or new devices while the owner is away.",
+};
+
+// Plain action title for each fix, and a rough time it takes (an estimate).
+const FIX_ACTIONS = {
+  public_wifi: "Use a VPN or your phone's hotspot on public wifi",
+  qr_scan: "Check where a QR code goes before you open it",
+  unknown_links: "Stop tapping links in texts from unknown numbers",
+  sideload_apps: "Only install apps from the official app store",
+  no_verify_sender: "Check the real sender address before you reply",
+  auto_login_public: "Sign out of shared and public computers",
+  public_employer: "Trim job details on your public profile",
+  active_job_search: "Show \"open to work\" to recruiters only",
+  public_phone: "Remove your phone number from public profiles",
+  shared_recovery_email: "Give your key accounts their own recovery email",
+  marketplace_listing: "Sell under a first name, without photos of your home",
+  dating_profile: "Use dating photos that aren't anywhere else online",
+  password_reuse: "Give every account its own password",
+  no_email_2fa: "Turn on two-step login for your email",
+  browser_only_passwords: "Move your passwords into a password manager",
+  stale_password: "Change passwords you haven't touched in years",
+  sms_only_2fa: "Switch login codes from texts to an authenticator app",
+  same_pin: "Use different PINs for your phone and your bank",
+  default_router_password: "Change your router's factory password",
+  share_location: "Post travel photos after you get home",
+  old_forgotten_account: "Close accounts you no longer use",
+  public_email: "Hide your email address from public profiles",
+  overshare_social: "Make personal posts friends-only",
+  smart_lock_email: "Put smart-home apps on a separate, protected email",
+};
+const FIX_MINUTES = {
+  public_wifi: 10, qr_scan: 1, unknown_links: 1, sideload_apps: 10, no_verify_sender: 1, auto_login_public: 5,
+  public_employer: 5, active_job_search: 5, public_phone: 5, shared_recovery_email: 20, marketplace_listing: 10, dating_profile: 10,
+  password_reuse: 30, no_email_2fa: 5, browser_only_passwords: 30, stale_password: 15, sms_only_2fa: 10, same_pin: 5,
+  default_router_password: 10, share_location: 2, old_forgotten_account: 15, public_email: 10, overshare_social: 10, smart_lock_email: 10,
+};
+
+// Free, official step-by-step guides. Every link loaded in a real browser
+// (HTTP 200, current address) in October 2026. No sponsored or affiliate links.
+const GUIDES = {
+  mfa: ["How to turn on multi-factor authentication", "CISA", "https://www.cisa.gov/secure-our-world/turn-mfa"],
+  passwords: ["Use strong passwords and a password manager", "CISA", "https://www.cisa.gov/secure-our-world/use-strong-passwords"],
+  phishing: ["Recognize and report phishing", "CISA", "https://www.cisa.gov/secure-our-world/recognize-and-report-phishing"],
+  ftcPhishing: ["How to recognize and avoid phishing scams", "FTC", "https://consumer.ftc.gov/articles/how-recognize-avoid-phishing-scams"],
+  wifi: ["Are public wi-fi networks safe?", "FTC", "https://consumer.ftc.gov/articles/are-public-wi-fi-networks-safe-what-you-need-know"],
+  qr: ["Scammers hide harmful links in QR codes", "FTC", "https://consumer.ftc.gov/consumer-alerts/2023/12/scammers-hide-harmful-links-qr-codes-steal-your-information"],
+  phone: ["How to protect your phone from hackers", "FTC", "https://consumer.ftc.gov/articles/how-protect-your-phone-hackers"],
+  jobs: ["Job scams: how to spot them", "FTC", "https://consumer.ftc.gov/articles/job-scams"],
+  iot: ["Securing your internet-connected devices at home", "FTC", "https://consumer.ftc.gov/articles/securing-your-internet-connected-devices-home"],
+  sim: ["Cell phone fraud and SIM swaps", "FCC", "https://www.fcc.gov/cell-phone-fraud"],
+  breach: ["Check if your email was in a data breach", "Have I Been Pwned", "https://haveibeenpwned.com/"],
+  privacy: ["Manage your privacy settings", "National Cybersecurity Alliance", "https://www.staysafeonline.org/articles/manage-your-privacy-settings"],
+  safety: ["Technology safety and privacy guides", "NNEDV Safety Net", "https://www.techsafety.org/resources-survivors"],
+};
+const FIX_GUIDES = {
+  public_wifi: "wifi", qr_scan: "qr", unknown_links: "ftcPhishing", sideload_apps: "phone", no_verify_sender: "phishing", auto_login_public: "passwords",
+  public_employer: "jobs", active_job_search: "jobs", public_phone: "sim", shared_recovery_email: "mfa", marketplace_listing: "safety", dating_profile: "safety",
+  password_reuse: "passwords", no_email_2fa: "mfa", browser_only_passwords: "passwords", stale_password: "breach", sms_only_2fa: "sim", same_pin: "passwords",
+  default_router_password: "iot", share_location: "safety", old_forgotten_account: "breach", public_email: "privacy", overshare_social: "privacy", smart_lock_email: "iot",
+};
+
+// Quick check: the six questions as moments in one ordinary day.
+// "Yes" always means the risky habit. Uses the same habit ids as QUICK_CHECK.
+const DAY_MOMENTS = [
+  { id: "public_wifi", time: "8:10 am", place: "Coffee shop", question: "The cafe wifi is free and open. Do you join it without a VPN?", hint: "Airports, hotels and campus networks count too.",
+    why: "On shared wifi, others on the network can sometimes watch or tamper with your traffic. It's a classic first step in." },
+  { id: "password_reuse", time: "10:30 am", place: "New app", question: "A new app asks you to make a password. Do you type the one you use everywhere?", hint: "Even a small variation of it counts.",
+    why: "One leaked password is a key. Reuse turns it into a master key for every account that shares it." },
+  { id: "no_email_2fa", time: "12:15 pm", place: "Inbox", question: "Your email offers to add a second sign-in step. Have you been skipping it?", hint: "Not sure if it's on? It probably isn't.",
+    why: "Your email can reset almost every other password you have. It's the account attackers want most." },
+  { id: "unknown_links", time: "6:05 pm", place: "Commute", question: "A text from an unknown number says your parcel is stuck. Do you tap the tracking link?", hint: "Delivery, bank and job texts all count.",
+    why: "Texts are the new phishing email: short, urgent, and hard to check on a small screen." },
+  { id: "smart_lock_email", time: "7:20 pm", place: "Home", question: "You unlock your front door from an app. Is that app tied to your main email?", hint: "Smart locks, doorbells and indoor cameras.",
+    why: "If one email controls your front door app, taking the email means taking the door." },
+  { id: "share_location", time: "9:40 pm", place: "Sofa", question: "You post: \"Off to Lisbon tomorrow for two weeks!\" Would you share that before you go?", hint: "Stories and check-ins count too.",
+    why: "Posting where you are also tells strangers where you aren't. Like home." },
+];
+
+// "If it already happened": official places to report and recover.
+const RECOVERY = [
+  { situation: "Someone got into your accounts or is using your identity", links: [["IdentityTheft.gov (FTC)", "https://www.identitytheft.gov/"]], note: "Report it and get a step-by-step recovery plan." },
+  { situation: "You lost money to a scam", links: [["ReportFraud.ftc.gov", "https://reportfraud.ftc.gov/"], ["IC3.gov (FBI)", "https://www.ic3.gov/"]], note: "Report to the FTC, and to the FBI for online crime." },
+  { situation: "Your phone suddenly shows \"no service\"", links: [["FCC: cell phone fraud", "https://www.fcc.gov/cell-phone-fraud"]], note: "It can be a sign of a SIM swap. Call your carrier right away." },
+  { situation: "You got a suspicious email or text", links: [["CISA: report phishing", "https://www.cisa.gov/secure-our-world/recognize-and-report-phishing"]], note: "Don't click. Report it and delete it." },
+  { situation: "You want to know if your email has leaked", links: [["Have I Been Pwned", "https://haveibeenpwned.com/"]], note: "Free check against known data breaches." },
 ];

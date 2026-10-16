@@ -4,6 +4,6 @@
   "description": "Privacy-first attack-path simulator",
   "license": "MIT",
   "scripts": {
-    "test": "node tests/test-bugfixes.js && node tests/test-demo-tour.js && node tests/test-home.js"
+    "test": "node tests/test-engine.js && node tests/test-home.js && node tests/test-assess.js"
   }
 }

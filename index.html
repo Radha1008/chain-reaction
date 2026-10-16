@@ -8,6 +8,7 @@
   <!-- Fonts are bundled in fonts/ (SIL OFL): this page makes zero third-party requests. -->
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="home.css" />
+  <link rel="stylesheet" href="assess.css" />
   <link rel="icon" type="image/png" href="favicon.png" />
 </head>
 <body>
@@ -25,9 +26,10 @@
       <div class="topbar-actions">
         <button type="button" class="btn btn-quiet" data-modal="howModal">How it works</button>
         <button type="button" class="btn btn-quiet" data-modal="libraryModal">Scenarios</button>
+        <button type="button" class="answitch" id="anSwitch" aria-pressed="false" hidden><span class="knob" aria-hidden="true"></span>Analyst mode <small>for security pros</small></button>
         <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">
           <span class="theme-toggle-dot" aria-hidden="true"></span>
-          <span class="theme-toggle-label" id="themeToggleLabel">Ink</span>
+          <span class="theme-toggle-label" id="themeToggleLabel">Espresso</span>
         </button>
       </div>
     </div>
@@ -164,312 +166,136 @@
       </section>
     </section>
 
-    <section id="pageQuick" class="page">
-      <div class="view-inner quick-wrap">
-        <div id="quickIntro">
-          <p class="section-eyebrow">Quick check</p>
-          <h1 class="page-title">Six questions. About sixty seconds.</h1>
-          <p class="page-lead">
-            Answer honestly: you'll get a severity score, the chain your answers form, and the one
-            habit worth fixing first. Everything carries over if you want the full picture after.
-          </p>
-          <div id="quickQuestions" class="quick-questions"></div>
-          <div class="quick-actions" id="quickActions">
-            <button id="quickRunBtn" class="btn btn-primary btn-lg" type="button" disabled>See my result</button>
-            <span id="quickCount" class="selection-count">0 of 6 answered</span>
-          </div>
+    <section id="pageQuick" class="page assess">
+      <div class="assess-wrap">
+    <div id="qAsk">
+      <div class="intro">
+        <span class="kicker">Quick check &middot; about 1 minute</span>
+        <h1>One ordinary day. Six small moments.</h1>
+        <p>Walk through a normal day and say which moments sound like you. After each one you'll see why it matters, and your map fills in as you go.</p>
+      </div>
+      <div class="qgrid">
+        <div class="qleft">
+        <div class="card qcard" aria-live="polite">
+          <div class="moments" id="qMoments" role="group" aria-label="Moments in your day"></div>
+          <div class="scene"><svg id="qArt" viewBox="0 0 150 110" aria-hidden="true"></svg>
+            <div><p class="when" id="qWhen"></p><p class="qq" id="qText"></p><p class="qhint" id="qHint"></p></div></div>
+          <div class="yn"><button type="button" data-a="yes" aria-pressed="false">Yes, that's me</button><button type="button" data-a="no" aria-pressed="false">Not me</button></div>
+          <div id="qWhy"></div>
+          <div class="row"><button type="button" class="a-btn" id="qBack">Back</button><button type="button" class="a-btn solid" id="qNext" disabled>Next question</button></div>
         </div>
+        <div class="card atk" aria-live="polite">
+          <div class="atk-head"><h3>Meanwhile, Phil Ishing <small style="font-weight:400;color:var(--faint)">the attacker</small></h3><span id="atkCount">0 clues</span></div>
+          <div class="atk-scene"><svg class="phil sneak" id="aStick" viewBox="0 0 70 96" aria-hidden="true"><g class="pall">
+              <path class="ph-body" d="M15 95 C15 70 23 56 35 56 C47 56 55 70 55 95 Z"/>
+              <g class="arms i-arms"><path d="M24 66 L19 86 M46 66 L51 86"/></g>
+              <g class="arms g-arms"><path d="M24 66 Q29 78 33 73 M46 66 Q41 78 37 73"/><circle cx="35" cy="73" r="3.6"/></g>
+              <g class="arms s-arms"><path d="M23 64 L8 57 M47 64 L62 57"/></g>
+              <path class="ph-hood" d="M13 42 C11 15 23 5 35 5 C47 5 59 15 57 42 C57 52 48 58 35 58 C22 58 13 52 13 42 Z"/>
+              <ellipse class="ph-face" cx="35" cy="37" rx="13.5" ry="13"/>
+              <g class="ph-eyes"><path d="M24 32.5 L33 35.5 L24 37.5 Z"/><path d="M46 32.5 L37 35.5 L46 37.5 Z"/></g>
+              <path class="ph-smirk" d="M29 44 Q36 47.5 42 42.5"/></g></svg>
+            <div class="desk"><div class="clues" id="clues"></div><div class="desk-top"></div></div></div>
+          <p class="atk-say" id="atkSay">Phil: "Let's see what this ordinary day gives me..."</p>
+        </div>
+        </div>
+        <div class="card qside">
+          <h3>Dee Fault's exposure map</h3>
+          <p>Dee is you, roughly. Each "yes" lights up the part of Dee's life it belongs to and draws a line in.</p>
+          <svg class="emap" id="qMap" viewBox="0 0 400 316" aria-label="Exposure map"></svg>
+          <div class="qfig"><svg class="stick idle" id="qStick" viewBox="0 0 70 96" aria-hidden="true"></svg><p class="bubble" id="qBubble">Hi, I'm Dee Fault. Watch my map with me.</p></div>
+        </div>
+      </div>
+    </div>
 
-        <div id="quickResult" class="quick-result" hidden>
-          <p class="section-eyebrow">Your quick result</p>
-          <div class="quick-result-top">
-            <div class="quick-score" id="quickScoreCard">
-              <span class="quick-score-num" id="quickScoreNum">0</span>
-              <span class="quick-score-band" id="quickScoreBand">Low</span>
-            </div>
-            <div class="quick-result-copy">
-              <h2 id="quickChainName"></h2>
-              <p id="quickChainSummary"></p>
-            </div>
-          </div>
-          <div id="quickWeakest" class="quick-weakest"></div>
-          <div class="quick-actions">
-            <button id="quickToFullBtn" class="btn btn-primary btn-lg" type="button">See the full breakdown</button>
-            <button id="quickRetakeBtn" class="btn btn-quiet" type="button">Retake</button>
-          </div>
-          <p class="quick-foot">
-            The full assessment adds <span data-habit-extra>18</span> more habits, the step-by-step chain, the threat-actor model,
-            and an exportable report, starting from these answers.
-          </p>
-        </div>
-        <p class="fnote"><b>Field note</b><span>The FTC says reported losses to job scams tripled between 2020 and 2023, and passed $220 million in just the first half of 2024. <a href="https://www.ftc.gov/news-events/news/press-releases/2024/12/new-ftc-data-show-skyrocketing-consumer-reports-about-game-online-job-scams" target="_blank" rel="noopener">Source: FTC, Dec 2024</a></span></p>
+    <div id="qResult" hidden>
+      <div class="intro">
+        <span class="kicker">Your result</span>
+        <h1 class="dtitle" id="dTitle"></h1>
+        <p class="dsub" id="dSub"></p>
+      </div>
+      <div class="card dwrap">
+        <div class="lane" id="dLane"></div>
+        <p class="dmsg" id="dMsg"></p>
+        <div class="row"><button type="button" class="a-btn" id="dReplay">Replay the fall</button><span class="sev an" id="dSev"></span></div>
+        <details class="story"><summary>Read the story step by step</summary><ol id="dStory"></ol></details>
+      </div>
+      <div class="card take" id="take" style="margin-top:18px">
+        <span class="kicker">Your one thing</span>
+        <h3 id="tLesson"></h3>
+        <p class="act" id="tAct"></p>
+        <p id="tWhy"></p>
+        <p class="anline an" id="tAn"></p>
+        <div class="row"><button type="button" class="a-btn safe" id="tCopy">Copy to send a friend</button><span class="copied" id="tCopied" hidden>Copied</span><button type="button" class="a-btn" id="tFull">See the full assessment</button><button type="button" class="a-btn" id="tRetake">Retake</button></div>
+      </div>
+      <p class="fnote"><b>Field note</b><span>The FTC says reported losses to job scams tripled between 2020 and 2023, and passed $220 million in just the first half of 2024. <a href="https://www.ftc.gov/news-events/news/press-releases/2024/12/new-ftc-data-show-skyrocketing-consumer-reports-about-game-online-job-scams" target="_blank" rel="noopener">Source: FTC, Dec 2024</a></span></p>
+    </div>
+        <div class="tstrip" id="tStrip" role="log" aria-live="polite"><div class="ts-head">Attacker log <small>analyst mode &middot; last 4 lines</small></div><div class="ts-lines" id="tsLines"></div></div>
       </div>
     </section>
 
-    <section id="pageFull" class="page">
-      <div class="subnav">
-        <div class="subnav-inner">
-          <button type="button" class="step active" data-tab="profile" role="tab" aria-selected="true">
-            <span class="step-num">1</span><span class="step-name">Your habits</span>
-          </button>
-          <span class="step-sep" aria-hidden="true"></span>
-          <button type="button" class="step" data-tab="chain" role="tab" aria-selected="false">
-            <span class="step-num">2</span><span class="step-name">Your attack chains</span>
-          </button>
-          <span class="step-sep" aria-hidden="true"></span>
-          <button type="button" class="step" data-tab="threat" role="tab" aria-selected="false">
-            <span class="step-num">3</span><span class="step-name">Who would target you</span>
-          </button>
+    <section id="pageFull" class="page assess">
+      <div class="assess-wrap">
+    <div class="casebar card" id="caseBar" aria-live="polite"></div>
+
+    <div class="tabpanel" id="t1">
+      <div class="intro"><span class="kicker">Step 1 of 4 &middot; pick your habits</span><h1>Five areas of your life. Tick what's true.</h1><p>Go through one area at a time. Most people tick four to six things. Your map fills in as you go.</p></div>
+      <details class="why-drawer"><summary>Show me why these five areas</summary><p>Attackers rarely need one big mistake. They combine small things from different parts of your life: something public to start, a way in, and a weak lock to finish. These five areas cover the 24 everyday habits the simulator knows about.</p></details>
+      <div class="samples">Or start from someone like:<button type="button" data-sample="job">Job seeker</button><button type="button" data-sample="travel">Traveller</button><button type="button" data-sample="student">Student</button><button type="button" id="clearMap">Clear</button></div>
+      <div class="pgrid">
+        <div class="card areacard">
+          <div class="atabs" id="aTabs" role="group" aria-label="Areas"></div>
+          <div><p class="when" id="aWhen"></p><h2 class="aname" id="aName"></h2><p class="qhint" id="aWhy"></p></div>
+          <div class="hlist" id="hList"></div>
+          <div class="row"><button type="button" class="a-btn" id="aPrev">Previous area</button><button type="button" class="a-btn solid" id="aNext">Next area</button></div>
+        </div>
+        <div class="card qside">
+          <h3>Your exposure map</h3>
+          <p>The area you're looking at pulses. Each tick draws a line to you. In analyst mode, the techniques your ticks enable are listed below the map.</p>
+          <svg class="emap" id="fMap" viewBox="0 0 400 316" aria-label="Exposure map"></svg>
+          <p class="qhint" id="t1hint"></p>
+          <div class="an attcov" id="attCov"></div>
         </div>
       </div>
+      <div class="foot-actions"><button type="button" class="a-btn solid" id="toBoard" disabled>See your case board</button></div>
+      <p class="fnote"><b>Field note</b><span>A Microsoft Research study of real accounts found that authenticator apps protect accounts better than codes sent by text message, though both beat having no second step. <a href="https://arxiv.org/abs/2305.00945" target="_blank" rel="noopener">Source: Microsoft Research, 2023</a></span></p>
+    </div>
 
-      <div id="viewProfile" class="view active">
-        <div class="view-inner profile-layout">
-          <div class="profile-visual">
-            <div id="surfaceMap" class="surface-map"></div>
-            <div class="stage-stats">
-              <div class="stat">
-                <span class="stat-value" id="summaryEntry">0</span>
-                <span class="stat-label">Entry points</span>
-              </div>
-              <div class="stat">
-                <span class="stat-value" id="summaryWeakness">0</span>
-                <span class="stat-label">Weaknesses</span>
-              </div>
-              <div class="stat">
-                <span class="stat-value" id="summarySignal">0</span>
-                <span class="stat-label">Signals</span>
-              </div>
-            </div>
+    <div class="tabpanel" id="t2" hidden>
+      <div class="intro"><span class="kicker">Step 2 of 4 &middot; your case board</span><h1 id="t2title">Your case board.</h1><p>Tap any note to read that step. Then pull a pin and watch the string go slack.</p></div>
+      <div class="ptabs" id="pTabs"></div>
+      <div class="board" id="cBoard" aria-label="Detective board: your attack path"><svg class="strings" aria-hidden="true"></svg></div>
+      <div class="card caption" id="caption" aria-live="polite"></div>
+      <div class="pullrow"><span class="lbl">Pull a pin:</span><div class="pins" id="pins"></div></div>
+      <p class="card result" id="pullResult" hidden></p>
+      <details class="why-drawer"><summary>Show me why: every step in words</summary><ol class="a-steps" id="aSteps"></ol><div class="anline an" id="aMath" style="margin-top:12px"></div></details>
+      <details class="why-drawer"><summary>Show me every path and its severity</summary><div id="moreBody"></div></details>
+      <div class="foot-actions"><button type="button" class="a-btn" id="replay">Replay the string</button><button type="button" class="a-btn solid" data-go="3">Make my unchain plan</button></div>
+    </div>
 
-            <div class="live-preview" id="livePreview">
-              <span class="live-preview-label">Live preview</span>
-              <p class="live-preview-empty" id="livePreviewEmpty">
-                Hover a ring to see what each category exposes, then pick a few habits and watch a chain form.
-              </p>
-              <div class="live-preview-body" id="livePreviewBody" hidden>
-                <p class="live-preview-summary" id="livePreviewSummary"></p>
-                <div class="live-preview-chain" id="livePreviewChain"></div>
-                <p class="live-preview-weakest" id="livePreviewWeakest"></p>
-              </div>
-            </div>
+    <div class="tabpanel" id="t3" hidden>
+      <div class="intro"><span class="kicker">Step 3 of 4 &middot; your unchain plan</span><h1 id="t3title">Your unchain plan.</h1><p>The fewest changes that close the most attack paths, each with a free official guide. Tick one off and watch a link in your chain snap.</p></div>
+      <div class="card suspect" id="suspect"></div>
+      <details class="why-drawer"><summary>Meet all three kinds of attacker</summary><div class="chars" id="chars"></div></details>
+      <div class="card chainbar"><div class="links" id="links" aria-hidden="true"></div><p class="a-chain-meta" id="chainMeta"></p><div class="stamp" id="stamp" hidden>Case closed</div></div>
+      <div class="plan" id="plan"></div>
+      <div class="foot-actions"><button type="button" class="a-btn" data-go="4">Next: if it already happened</button></div>
+    </div>
 
-            <p class="stage-hint" id="summaryHint">
-              Select at least one entry point and one weakness to unlock a chain.
-            </p>
-            <p class="privacy-note">
-              <span class="privacy-dot" aria-hidden="true"></span>
-              Nothing is stored or sent anywhere.
-            </p>
-          </div>
-
-          <div class="profile-select">
-            <div class="select-head">
-              <div>
-                <h1>Which of these are actually true for you?</h1>
-                <p class="select-sub">
-                  Be honest: the chain only means something if the inputs do. The map reacts as you go.
-                </p>
-              </div>
-              <button id="clearBtn" class="btn btn-quiet" type="button">Clear</button>
-            </div>
-
-            <div id="demoBanner" class="demo-banner" hidden>
-              <p><strong>Fictional example: no real data.</strong> <span id="demoDesc"></span></p>
-              <button type="button" class="btn btn-quiet btn-sm" id="demoClearBtn">Clear demo</button>
-            </div>
-
-            <div class="situation-block">
-              <p class="persona-picker-label">What are you doing right now? This highlights the factors that matter most for that threat model.</p>
-              <div id="situationGrid" class="situation-grid"></div>
-            </div>
-
-            <div class="persona-picker">
-              <p class="persona-picker-label">Or start from a ready-made profile</p>
-              <div id="personaGrid" class="persona-grid"></div>
-              <button type="button" class="btn btn-outline btn-sm" id="demoBtn">Try a realistic scenario</button>
-            </div>
-
-            <div id="habitGrid" class="habit-grid"></div>
-
-            <div class="run-row">
-              <button id="runBtn" class="btn btn-primary btn-lg" type="button" disabled>
-                <span>Run the simulation</span>
-              </button>
-              <span id="selectionCount" class="selection-count">0 habits selected</span>
-            </div>
-            <p class="fnote"><b>Field note</b><span>A Microsoft Research study of real accounts found that authenticator apps protect accounts better than codes sent by text message, though both beat having no second step at all. <a href="https://arxiv.org/abs/2305.00945" target="_blank" rel="noopener">Source: Microsoft Research, 2023</a></span></p>
-          </div>
-        </div>
-      </div>
-
-      <div id="panelChain" class="view">
-        <div class="view-inner">
-          <div id="resultsEmpty" class="results-empty">
-            <div class="empty-icon" aria-hidden="true"></div>
-            <div>
-              <p class="results-empty-title">No chain yet</p>
-              <p>Head back to step one, pick at least two habits, and run the simulation.</p>
-            </div>
-          </div>
-
-          <div id="analyzing" class="analyzing" hidden>
-            <svg viewBox="0 0 400 90" class="scene-svg" aria-hidden="true">
-              <line x1="80" y1="55" x2="320" y2="55" stroke="var(--border)" stroke-width="2" stroke-dasharray="4 7" />
-              <circle class="scene-tick" style="--d:0s" cx="115" cy="55" r="3.5" />
-              <circle class="scene-tick" style="--d:0.24s" cx="175" cy="55" r="3.5" />
-              <circle class="scene-tick" style="--d:0.48s" cx="235" cy="55" r="3.5" />
-              <circle class="scene-tick" style="--d:0.72s" cx="295" cy="55" r="3.5" />
-              <g class="scene-attacker">
-                <circle cx="0" cy="38" r="9" fill="var(--text-faint)" />
-                <rect x="-11" y="48" width="22" height="20" rx="7" fill="var(--text-faint)" />
-              </g>
-              <g transform="translate(345,0)">
-                <circle class="scene-you-ring" cx="0" cy="45" r="24" fill="none" stroke="var(--accent)" stroke-width="1.5" opacity="0.35" />
-                <circle cx="0" cy="35" r="10" fill="none" stroke="var(--text)" stroke-width="2.5" />
-                <rect x="-13" y="46" width="26" height="22" rx="8" fill="none" stroke="var(--text)" stroke-width="2.5" />
-              </g>
-            </svg>
-            <div class="analyzing-log">
-              <p class="log-line" style="--d:0s">&gt; Scanning selected habits for entry vectors&hellip;</p>
-              <p class="log-line" style="--d:0.24s">&gt; Cross-referencing escalation weaknesses&hellip;</p>
-              <p class="log-line" style="--d:0.48s">&gt; Checking exposure signals&hellip;</p>
-              <p class="log-line" style="--d:0.72s">&gt; Matching against attack-chain library&hellip;</p>
-              <p class="log-line log-line-final" style="--d:0.96s">&gt; Chain assembled.</p>
-            </div>
-          </div>
-
-          <div id="resultsChain" class="results-chain" hidden>
-            <div class="print-only-header">
-              <p class="print-brand">ChainReaction: Simulated Attack-Path Report</p>
-              <p class="print-date" id="printDate"></p>
-            </div>
-
-            <div class="findings">
-              <p class="section-eyebrow">Simulation complete</p>
-              <h1 id="findingsTitle">We found 3 connected attack paths.</h1>
-              <p class="findings-sub">
-                None of these factors is necessarily dangerous on its own. The risk comes from
-                the connections between them.
-              </p>
-              <div id="profileSummary" class="profile-summary"></div>
-
-              <div class="metrics">
-                <div class="metric">
-                  <span class="metric-num" id="mFactors">0</span>
-                  <span class="metric-label">Factors selected</span>
-                </div>
-                <div class="metric">
-                  <span class="metric-num" id="mPaths">0</span>
-                  <span class="metric-label">Matched attack paths</span>
-                </div>
-                <div class="metric">
-                  <span class="metric-num" id="mNodes">0</span>
-                  <span class="metric-label">Connected nodes</span>
-                </div>
-                <div class="metric">
-                  <span class="metric-num" id="mRemovable">0</span>
-                  <span class="metric-label">Paths removable by one change</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="path-layout">
-              <aside class="path-list" aria-label="Matched attack paths">
-                <p class="path-list-head">Matched paths</p>
-                <div id="pathList"></div>
-              </aside>
-
-              <div class="path-detail">
-                <div class="path-detail-head">
-                  <div>
-                    <span class="chain-badge" id="chainBadge">Scenario</span>
-                    <h2 id="chainName"></h2>
-                    <p id="chainExtra" class="chain-extra"></p>
-                  </div>
-                  <div class="path-controls">
-                    <div class="view-toggle" role="group" aria-label="Perspective">
-                      <button type="button" class="view-opt active" data-view="my" aria-pressed="true">My view</button>
-                      <button type="button" class="view-opt" data-view="attacker" aria-pressed="false">Attacker view</button>
-                    </div>
-                    <button type="button" id="replayBtn" class="btn btn-quiet btn-sm">Replay path</button>
-                  </div>
-                </div>
-
-                <p class="view-note" id="viewNote">Same information, from your side.</p>
-
-                <div id="chainFlow" class="chain-flow"></div>
-
-                <div id="nodeDetail" class="node-detail" hidden></div>
-
-                <div id="severityCard" class="severity-card">
-                  <div class="severity-score-block">
-                    <span class="severity-number" id="severityNumber">0</span>
-                    <span class="severity-max">/10</span>
-                  </div>
-                  <div class="severity-detail">
-                    <span class="severity-band" id="severityBand">Low</span>
-                    <div class="severity-breakdown" id="severityBreakdown"></div>
-                  </div>
-                </div>
-
-                <div id="realWorldNote" class="real-world-note" hidden>
-                  <span class="real-world-kicker">Why this matters</span>
-                  <p id="realWorldText"></p>
-                </div>
-              </div>
-            </div>
-
-            <div class="interventions">
-              <p class="section-eyebrow">Break the chain</p>
-              <h2 class="interventions-title">What if you changed one thing?</h2>
-              <p class="interventions-sub">
-                Each figure is measured directly from the rules engine: how many of your matched
-                paths stop matching if that single factor is removed. Simulated, not applied.
-              </p>
-              <div id="interventionList" class="intervention-list"></div>
-              <div id="simResult" class="sim-result" hidden></div>
-            </div>
-
-            <div class="chain-actions">
-              <button id="downloadBtn" class="btn btn-quiet" type="button">Export this simulation</button>
-            </div>
-
-            <div id="weakestLinkPanel" class="weakest-link-panel" hidden>
-              <div class="weakest-link-head">
-                <span class="weakest-link-icon" id="weakestLinkIcon" aria-hidden="true"></span>
-                <p class="weakest-link-label">Weakest link: <strong id="weakestLinkText"></strong></p>
-              </div>
-              <button id="fixBtn" class="btn btn-fix" type="button">What if you fixed this?</button>
-              <div id="fixResult" class="fix-result" hidden></div>
-            </div>
-          </div>
-          <div id="resultsNoChain" class="results-nochain" hidden>
-            <p id="noChainText"></p>
-          </div>
-        </div>
-      </div>
-
-      <div id="panelThreat" class="view">
-        <div class="view-inner">
-          <div id="threatEmpty" class="results-empty">
-            <div class="empty-icon" aria-hidden="true"></div>
-            <div>
-              <p class="results-empty-title">Nothing to model yet</p>
-              <p>Run the simulation first and this will show which kind of attacker your profile suits.</p>
-            </div>
-          </div>
-
-          <div id="threatModel" class="threat-model" hidden>
-            <h1>Who's most likely to come after you</h1>
-            <p class="threat-lead">
-              Same selections, a different question: not the exact path, but what kind of attacker
-              your overall profile suits.
-            </p>
-            <div id="threatBars" class="threat-bars"></div>
-            <p class="fnote"><b>Field note</b><span>Since 2023, FCC rules require US mobile carriers to securely verify you before moving your number to a new SIM card or carrier, and to let you lock your account against those changes. <a href="https://docs.fcc.gov/public/attachments/DOC-398483A1.pdf" target="_blank" rel="noopener">Source: FCC, Nov 2023</a></span></p>
-          </div>
-        </div>
+    <div class="tabpanel" id="t4" hidden>
+      <div class="intro"><span class="kicker">Step 4 of 4 &middot; if it already happened</span><h1>Something already went wrong? Here's where to go.</h1><p>Prevention is the plan. But if one of these chains has already happened to you, these are the official places to report it and get help. All of them are free.</p></div>
+      <section class="card recover">
+        <ul>
+          <li><b>Someone got into your accounts or is using your identity</b><a href="https://www.identitytheft.gov/" target="_blank" rel="noopener">IdentityTheft.gov (FTC) &#8599;</a><span>Report it and get a step-by-step recovery plan.</span></li>
+          <li><b>You lost money to a scam</b><a href="https://reportfraud.ftc.gov/" target="_blank" rel="noopener">ReportFraud.ftc.gov &#8599;</a><a href="https://www.ic3.gov/" target="_blank" rel="noopener">IC3.gov (FBI) &#8599;</a><span>Report to the FTC, and to the FBI for online crime.</span></li>
+          <li><b>Your phone suddenly shows "no service"</b><a href="https://www.fcc.gov/cell-phone-fraud" target="_blank" rel="noopener">FCC: cell phone fraud &#8599;</a><span>It can be a sign of a SIM swap. Call your carrier right away.</span></li>
+          <li><b>You got a suspicious email or text</b><a href="https://www.cisa.gov/secure-our-world/recognize-and-report-phishing" target="_blank" rel="noopener">CISA: report phishing &#8599;</a><span>Don't click. Report it and delete it.</span></li>
+          <li><b>You want to know if your email has leaked</b><a href="https://haveibeenpwned.com/" target="_blank" rel="noopener">Have I Been Pwned &#8599;</a><span>Free check against known data breaches.</span></li>
+        </ul>
+      </section>
+      <p class="fnote"><b>Field note</b><span>Since 2023, FCC rules require US mobile carriers to securely verify you before moving your number to a new SIM card or carrier, and to let you lock your account against those changes. <a href="https://docs.fcc.gov/public/attachments/DOC-398483A1.pdf" target="_blank" rel="noopener">Source: FCC, Nov 2023</a></span></p>
+      <div class="foot-actions"><button type="button" class="a-btn" data-go="3">Back to my unchain plan</button></div>
+    </div>
       </div>
     </section>
 
@@ -510,7 +336,7 @@
               <div class="step-card">
                 <span class="step-card-num">01</span>
                 <h3>You self-report</h3>
-                <p>Toggle the habits that describe you. No accounts, no real passwords, no personal data: just categories.</p>
+                <p>Tick the habits that describe you, one area of your life at a time. No accounts, no real passwords, no personal data: just categories.</p>
               </div>
               <div class="step-card">
                 <span class="step-card-num">02</span>
@@ -520,12 +346,12 @@
               <div class="step-card">
                 <span class="step-card-num">03</span>
                 <h3>You see the path</h3>
-                <p>A step-by-step walkthrough of how an attacker moves from your first weak point to real impact.</p>
+                <p>Each step is pinned on a case board and joined by red string, from your first weak point to real impact. Tap any note to read it.</p>
               </div>
               <div class="step-card">
                 <span class="step-card-num">04</span>
-                <h3>You see the fix</h3>
-                <p>Every chain has a single weakest link. Fix that one habit and the whole path collapses.</p>
+                <h3>You get an unchain plan</h3>
+                <p>The fewest changes that close the most paths, each with a free official guide. Tick them off and watch your chain snap.</p>
               </div>
             </div>
           </div>
@@ -628,7 +454,9 @@
   </div>
 
   <script src="data.js"></script>
+  <script src="engine.js"></script>
   <script src="app.js"></script>
+  <script src="assess.js"></script>
   <script src="home.js"></script>
 </body>
 </html>
