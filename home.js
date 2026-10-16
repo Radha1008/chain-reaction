@@ -1,3 +1,4 @@
+// © 2026 Radha Prabhakaran. All rights reserved. See LICENSE.
 // ChainReaction: home page recon game, page guide, glossary pop-ups.
 // Runs after data.js and app.js. Like the rest of the site it keeps
 // everything in memory: nothing is stored, sent or persisted.

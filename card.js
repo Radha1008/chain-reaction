@@ -1,3 +1,4 @@
+// © 2026 Radha Prabhakaran. All rights reserved. See LICENSE.
 // ChainReaction: "Save my chain" image. Draws a result as a printable
 // flowchart on a canvas and hands it to the visitor as a PNG download.
 // Everything happens in this tab: no upload, no third-party code, no storage.

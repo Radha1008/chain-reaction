@@ -1,3 +1,4 @@
+// © 2026 Radha Prabhakaran. All rights reserved. See LICENSE.
 // ChainReaction: the rules engine. Pure functions over the content in data.js,
 // shared by every page so the Quick check and Full assessment always agree.
 // No DOM, no storage, no network.

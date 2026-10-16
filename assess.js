@@ -1,4 +1,4 @@
-
+// © 2026 Radha Prabhakaran. All rights reserved. See LICENSE.
 // ChainReaction: Quick check ("one ordinary day") and Full assessment
 // (habits, case board, unchain plan, recovery). Uses the content in data.js
 // and the shared rules in engine.js. Like the rest of the site it keeps
@@ -354,7 +354,7 @@
       };
     });
   }
-  const FOOT = "Made at " + SITE + ". Drawn in your browser; nothing was sent to any server. Educational simulation, not professional security advice.";
+  const FOOT = "© 2026 Radha Prabhakaran, " + SITE + ". Drawn in your browser; nothing was sent to any server. Educational simulation, not professional security advice.";
   function quickCard() {
     const h = H[tId], g = RES[tId];
     const steps = qPath ? flowSteps(qPath, qSel, tId, "Change this and the chain stops here.") : [];
@@ -376,7 +376,7 @@
   $("tCopy").addEventListener("click", () => {
     const d = quickCard();
     const text = "Chain Reaction: " + d.title + "\n" + d.sub + "\n\n" + d.steps.map((s, i) => (i + 1) + ". [" + s.tag + "] " + s.text).join("\n") +
-      "\n\nMy one thing: " + d.sections[0].items[0].head + "\n" + d.sections[0].items[0].body + (d.sections[0].items[0].link ? "\n" + d.sections[0].items[0].link : "") + "\n\n" + SITE;
+      "\n\nMy one thing: " + d.sections[0].items[0].head + "\n" + d.sections[0].items[0].body + (d.sections[0].items[0].link ? "\n" + d.sections[0].items[0].link : "") + "\n\n© 2026 Radha Prabhakaran, " + SITE;
     const done = () => { $("tCopied").hidden = false; setTimeout(() => ($("tCopied").hidden = true), 1800); };
     if (navigator.clipboard) navigator.clipboard.writeText(text).then(done, () => fallbackCopy(text, done)); else fallbackCopy(text, done);
   });

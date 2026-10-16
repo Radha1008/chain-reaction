@@ -1,21 +1,23 @@
-MIT License
+Copyright (c) 2026 Radha Prabhakaran. All rights reserved.
 
-Copyright (c) 2026 Radha
+Chain Reaction, including its source code, written content, scenarios,
+characters, rules, visual design, logo, images and the images it generates,
+is the original work of Radha Prabhakaran.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+No permission is granted to copy, modify, distribute, republish, sublicense
+or create derivative works from any part of this project, in whole or in
+part, without prior written permission from the author. Viewing the source
+on GitHub and using the live site as a visitor are permitted.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+Versions of this repository published before 16 October 2026 were released
+under the MIT License; that grant applies only to copies of those earlier
+versions. It does not apply to this or any later version.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+Third-party material keeps its own license:
+  - IBM Plex Sans and IBM Plex Mono (fonts/IBMPlex*): SIL Open Font License
+    1.1, see fonts/OFL-IBMPlex.txt
+  - Fraunces (fonts/Fraunces*): SIL Open Font License 1.1, see
+    fonts/OFL-Fraunces.txt
+
+For permission requests, open an issue at
+https://github.com/Radha1008/chainreaction-ewgh-2026

@@ -1,3 +1,4 @@
+// © 2026 Radha Prabhakaran. All rights reserved. See LICENSE.
 // ChainReaction: habit & attack-chain data
 // This is the actual security-engineering substance of the app: every habit is
 // tagged with a role in a kill chain (entry / weakness / signal), each role has

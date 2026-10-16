@@ -74,6 +74,12 @@ If Chrome isn't in a standard location, set `CHROME_PATH` first.
 - A Quick exit button.
 - People-aware risk modeling that accounts for who else is in the picture, not just the account.
 
-## License
+## Copyright
 
-MIT. See [LICENSE](LICENSE).
+© 2026 Radha Prabhakaran. All rights reserved.
+
+Chain Reaction is my original work: the concept, scenarios, characters, rules, writing and design. You are welcome to read the code and use the live site, but no part of it may be copied, reused, modified or republished without my written permission. See [LICENSE](LICENSE).
+
+Versions published before 16 October 2026 were released under the MIT License; that applies only to copies of those earlier versions. The bundled fonts keep their own SIL Open Font License.
+
+MITRE ATT&CK® technique IDs and names belong to The MITRE Corporation and are used for reference under MITRE's terms of use; they are not part of my copyright claim. MITRE ATT&CK is a registered trademark of The MITRE Corporation.

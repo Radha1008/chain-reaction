@@ -1,3 +1,4 @@
+// © 2026 Radha Prabhakaran. All rights reserved. See LICENSE.
 // ChainReaction: site shell. Theme, page routing, modals, the scenario
 // library and Cipher the assistant. The Quick check and Full assessment live
 // in assess.js; the attack-path rules live in engine.js.
