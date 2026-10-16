@@ -1,0 +1,47 @@
+# © 2026 Radha Prabhakaran. All rights reserved. See LICENSE.
+# Detection-as-code checks: validate every Sigma rule, test it against attack and normal sample
+# logs, convert it to KQL and SPL, and run the site's content tests. Actions are pinned by commit.
+name: Detection Pack
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  detections:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: detections/requirements.txt
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "24"
+
+      - name: Install Sigma tooling
+        run: pip install -r detections/requirements.txt
+
+      - name: Validate rules (every SigmaHQ validator, fail on any issue)
+        run: sigma check --fail-on-issues --validation-config detections/sigma-check.yml detections/rules
+
+      - name: Test rules against sample logs, convert to KQL and SPL
+        run: python detections/test_detections.py --build build/queries
+
+      - name: Site content and engine tests
+        run: node tests/test-engine.js
+
+      - name: Upload KQL and SPL
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: detection-queries
+          path: build/queries/

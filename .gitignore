@@ -18,3 +18,7 @@ logo-source.jpg
 # Private working notes (kept locally, not published)
 BRIEF.md
 PROGRESS.md
+
+# Detection Pack build output (KQL/SPL are a CI artifact)
+build/
+__pycache__/

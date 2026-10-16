@@ -1,0 +1,20 @@
+# © 2026 Radha Prabhakaran. All rights reserved. See LICENSE.
+# Validation settings for `sigma check`. Every SigmaHQ validator runs, and the run fails on
+# any issue. The few exceptions are per rule, each with its reason:
+#   number_as_string       ResultType is a string column in SigninLogs (Microsoft Learn), so
+#                          its codes stay quoted to match the real data type.
+#   sigmahq_unknown_field  `chainreaction` is this project's own block linking a rule to the
+#                          chain steps it covers. The Sigma specification allows custom
+#                          attributes; SigmaHQ's own repo does not use any.
+validators:
+    - all
+    - -tlptag
+    - -tlpv1_tag
+exclusions:
+    a188c664-b2fe-433a-9ba6-74737b1f91e2:
+        - number_as_string
+        - sigmahq_unknown_field
+    a2b4e4f3-820d-41a5-bf98-5cfd712f404c: number_as_string
+    421efcda-a43f-4584-9325-bb6086846e9e: number_as_string
+    8ed17706-1b5f-48fa-b551-f84087c10b4a: sigmahq_unknown_field
+    6411ba60-2590-4de2-b904-4c27f41d7739: sigmahq_unknown_field

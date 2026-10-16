@@ -1,0 +1,58 @@
+# © 2026 Radha Prabhakaran. All rights reserved. See LICENSE.
+title: Inbox Rule Hides Or Deletes Security Emails
+id: 6411ba60-2590-4de2-b904-4c27f41d7739
+status: experimental
+description: |
+    Detects a new or changed Exchange Online inbox rule that deletes, moves or marks as read any
+    mail whose subject or body mentions security, passwords, sign-ins or verification. After a
+    takeover this keeps the owner from seeing the "new sign-in" and "password changed" warnings
+    that would tell them something is wrong.
+references:
+    - https://learn.microsoft.com/en-us/azure/azure-monitor/reference/tables/officeactivity
+    - https://learn.microsoft.com/en-us/powershell/module/exchangepowershell/new-inboxrule
+    - https://github.com/Azure/Azure-Sentinel/blob/master/Solutions/Microsoft%20365/Analytic%20Rules/Malicious_Inbox_Rule.yaml
+author: Radha Prabhakaran
+date: 2026-10-16
+tags:
+    - attack.stealth
+    - attack.t1564.008
+logsource:
+    product: m365
+    service: exchange
+detection:
+    selection_rule:
+        Operation:
+            - 'New-InboxRule'
+            - 'Set-InboxRule'
+    selection_hide:
+        Parameters|contains:
+            - 'DeleteMessage'
+            - 'MarkAsRead'
+            - 'Deleted Items'
+            - 'Junk Email'
+            - 'Archive'
+            - 'RSS'
+            - 'Conversation History'
+    selection_words:
+        Parameters|contains:
+            - 'security'
+            - 'password'
+            - 'sign-in'
+            - 'sign in'
+            - 'verif'
+            - 'suspicious'
+            - 'unusual'
+            - 'compromised'
+            - 'hacked'
+            - 'phish'
+            - 'recovery'
+    condition: all of selection_*
+falsepositives:
+    - People filing security newsletters or vendor marketing into a folder. Check who created the rule and from which IP and device.
+level: high
+chainreaction:
+    code: CR-006
+    catches: A mail rule that quietly bins the warnings meant for the owner.
+    steps:
+        - recovery_email_chain:4
+        - forgotten_account_cascade:3

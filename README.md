@@ -27,6 +27,16 @@ Everyday people first, without leaving security professionals out. It was built 
 - **Deterministic rules engine.** Every chain, score and recommendation comes from hand-written content in `data.js` and the rules in `engine.js`. The same inputs always produce the same output. There is no model call and nothing is generated at runtime.
 - **Cipher.** A rule-based assistant that explains terms and adds habits to your assessment. Rule-based, not a chatbot.
 
+## Detection Pack
+
+If a chain hit a work account, how would a security team catch it? [`detections/`](detections/) holds Sigma rules for the attacker steps that leave a trace in Microsoft Entra ID and Exchange Online logs, each linked to the chain steps it covers and tested on every push against attack and near-miss sample logs. The first three:
+
+- **CR-001** a sign-in that succeeds with a password alone from an unregistered device (T1078.004)
+- **CR-002** a burst of wrong passwords on one account, then a success (T1110.004, a correlation rule)
+- **CR-006** an inbox rule that hides or deletes security emails (T1564.008)
+
+CI validates every rule with all SigmaHQ validators, checks every field against Microsoft's Sentinel table schemas, and builds KQL and SPL. The [Detection Pack README](detections/README.md) covers how it's tested and its limits.
+
 ## Safety by design
 
 An attack-path tool can be misread as a how-to, so the content follows four rules:
@@ -66,6 +76,7 @@ Built with Claude Code. I directed every decision: scope, scenarios, rules, copy
 | `assess.js` / `assess.css` | Quick check and Full assessment |
 | `app.js` | Theme, routing, modals, scenario library, Cipher |
 | `styles.css` | Site-wide styles and the Espresso / Walnut colour tokens |
+| `detections/` | Sigma rules, sample logs and their tests (the Detection Pack) |
 
 ## Running the tests
 
@@ -76,6 +87,8 @@ npm test
 ```
 
 If Chrome isn't in a standard location, set `CHROME_PATH` first.
+
+The Detection Pack has its own Python tests; see [detections/README.md](detections/README.md#how-its-tested).
 
 ## Next steps
 

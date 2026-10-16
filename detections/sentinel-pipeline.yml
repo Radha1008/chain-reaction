@@ -1,0 +1,30 @@
+# © 2026 Radha Prabhakaran. All rights reserved. See LICENSE.
+# pySigma processing pipeline for the Kusto backend: puts each rule on its Microsoft Sentinel
+# table and fixes two things the generic backend writes in a way KQL doesn't accept.
+name: Chain Reaction to Microsoft Sentinel tables
+priority: 100
+postprocessing:
+    - id: kql_bool_equality
+      type: replace
+      pattern: '(\w+) =~ (true|false)\b'
+      replacement: '\1 == \2'
+    - id: kql_nested_fields
+      type: replace
+      pattern: '''(DeviceDetail)\.(\w+)'''
+      replacement: 'tostring(\1.\2)'
+    - id: signin_table
+      type: embed
+      prefix: "SigninLogs\n| where "
+      suffix: ""
+      rule_conditions:
+          - type: logsource
+            product: azure
+            service: signinlogs
+    - id: office_table
+      type: embed
+      prefix: "OfficeActivity\n| where "
+      suffix: ""
+      rule_conditions:
+          - type: logsource
+            product: m365
+            service: exchange
