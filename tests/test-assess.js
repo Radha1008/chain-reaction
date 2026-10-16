@@ -60,6 +60,10 @@ async function main() {
     check(true, "pulling a domino stops the fall");
     check(await tab.evaluate(`document.getElementById('tAct').textContent.startsWith('Do this today')`), "takeaway card gives one action");
     check(await tab.evaluate(`document.querySelector('#gSteps .g-step[aria-current=step]').textContent.includes('Your dominoes')`), "page guide moves to step 2");
+    await tab.evaluate(`document.getElementById('tSave').click()`);
+    await waitFor(tab, `document.getElementById('tSave').textContent === 'Saved'`, 5000, "dominoes image saved");
+    check(true, "'Save my dominoes as an image' draws and offers a PNG");
+    check(await tab.evaluate(`(() => { const c = CRCard.render({ title: 't', sub: 's', steps: [{ text: 'x', tag: 'Attacker move' }], sections: [], footer: 'f' }); return c.width === 2160 && c.height > 200; })()`), "the image is drawn at print resolution");
     await tab.evaluate(`document.getElementById('tFull').click()`); await sleep(300);
     check(await tab.evaluate(`document.getElementById('pageFull').classList.contains('active') && CRAssess.hasPaths`), "'See the full assessment' carries the answers over");
 
@@ -91,6 +95,9 @@ async function main() {
     await tab.evaluate(`CRAssess.goTab(3)`); await sleep(300);
     check(await tab.evaluate(`document.getElementById('t3title').textContent === 'One change to unchain yourself.'`), "plan headline counts the fewest changes");
     check(await tab.evaluate(`[...document.querySelectorAll('#plan .a-res')].every(a => a.href.startsWith('https://'))`), "every fix links an official guide");
+    await tab.evaluate(`document.getElementById('pSave').click()`);
+    await waitFor(tab, `document.getElementById('pSave').textContent === 'Saved'`, 5000, "plan image saved");
+    check(true, "'Save my plan as an image' draws and offers a PNG");
     await tab.evaluate(`document.querySelector('#plan .pitem input').click()`); await sleep(300);
     check(await tab.evaluate(`!document.getElementById('stamp').hidden && document.getElementById('links').classList.contains('loose')`), "ticking the fix breaks the chain and stamps the case closed");
     await tab.evaluate(`document.querySelector('#t3 [data-go="4"]').click()`); await sleep(300);

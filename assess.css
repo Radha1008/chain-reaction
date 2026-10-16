@@ -495,3 +495,4 @@ body.analyst .assess .tstrip { display: block; }
   .answitch { font-size: 0; gap: 0; padding: 4px 10px 4px 4px; }
   .answitch::after { content: "Analyst"; font-size: 13px; margin-left: 8px; }
 }
+.assess .share-note { margin-top: 8px; font-size: 12px; }

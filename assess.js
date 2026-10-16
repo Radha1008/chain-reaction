@@ -326,18 +326,57 @@
     }
   }
   $("dReplay").addEventListener("click", () => { $("dMsg").className = "dmsg"; topple(null); });
+  let tId = "no_email_2fa";
   function takeaway(chosen) {
     let id = chosen;
     if (!id) { const iv = interventions(qSel); id = iv.list.length ? iv.list[0].id : (qSel.has("no_email_2fa") ? "no_email_2fa" : null); }
     const h = id ? H[id] : H.no_email_2fa;
+    tId = h.id;
     const mine = qPath ? qPath.habits.filter((x) => qSel.has(x)).map((x) => H[x].shortName) : [];
     $("tLesson").textContent = qPath ? `Your risk isn't one habit. It's how ${mine.slice(0, 2).join(" and ")} connect.` : "Keep it that way, and lock the account that unlocks everything.";
     $("tAct").textContent = `Do this today (about ${MINUTES[h.id]} min): ${h.fixAdvice}`;
     $("tWhy").textContent = qPath ? "Fixing this one habit pulls out the domino that breaks the most paths for you." : "Your email resets every other password you own, so it deserves the strongest protection.";
     $("tAn").innerHTML = anLine(h.id);
   }
+  // ---------- "Save my chain": the result as a picture people can keep ----------
+  const SITE = "radha1008.github.io/chainreaction-ewgh-2026";
+  const today = () => new Date().toISOString().slice(0, 10);
+  const analystOn = () => document.body.classList.contains("analyst");
+  function flowSteps(p, mine, pullId, pullNote) {
+    return p.steps.map((s, i) => {
+      const id = p.stepHabits[i], last = i === p.steps.length - 1, t = p.stepTech && p.stepTech[i];
+      const own = !!(id && mine.has(id)), pull = own && id === pullId;
+      return {
+        text: s, goal: last, mine: own, pull,
+        tag: last ? "The goal: " + p.objective : pull ? "Pull this one: " + H[id].shortName : own ? "Your habit: " + H[id].shortName : "Attacker move",
+        note: pull ? pullNote : "",
+        code: analystOn() && t && t.id ? t.id : "",
+      };
+    });
+  }
+  const FOOT = "Made at " + SITE + ". Drawn in your browser; nothing was sent to any server. Educational simulation, not professional security advice.";
+  function quickCard() {
+    const h = H[tId], g = RES[tId];
+    const steps = qPath ? flowSteps(qPath, qSel, tId, "Change this and the chain stops here.") : [];
+    return {
+      title: qPath ? "How my habits could fall like dominoes" : "My chain check",
+      sub: (qPath ? qPath.steps.length + "-step attack path ending in: " + qPath.objective.toLowerCase() + ". " : "No complete attack path from my answers. ") + "Checked " + today() + ".",
+      steps,
+      sections: [{ title: "My one thing", tone: "safe", items: [{ head: ACTION[h.id] + " (about " + MINUTES[h.id] + " min)", body: h.fixAdvice, link: g ? "Free guide: " + g[1] + ", " + g[2] : "" }] }],
+      footer: FOOT,
+    };
+  }
+  function saveCard(btn, data, name) {
+    const label = btn.textContent;
+    btn.disabled = true; btn.textContent = "Drawing...";
+    window.CRCard.save(data, "chain-reaction-" + name + "-" + today() + ".png").then(() => { btn.textContent = "Saved"; }, () => { btn.textContent = "Could not draw it"; })
+      .then(() => setTimeout(() => { btn.disabled = false; btn.textContent = label; }, 1800));
+  }
+  $("tSave").addEventListener("click", (e) => saveCard(e.currentTarget, quickCard(), "dominoes"));
   $("tCopy").addEventListener("click", () => {
-    const text = "My Chain Reaction takeaway: " + $("tLesson").textContent + " " + $("tAct").textContent;
+    const d = quickCard();
+    const text = "Chain Reaction: " + d.title + "\n" + d.sub + "\n\n" + d.steps.map((s, i) => (i + 1) + ". [" + s.tag + "] " + s.text).join("\n") +
+      "\n\nMy one thing: " + d.sections[0].items[0].head + "\n" + d.sections[0].items[0].body + (d.sections[0].items[0].link ? "\n" + d.sections[0].items[0].link : "") + "\n\n" + SITE;
     const done = () => { $("tCopied").hidden = false; setTimeout(() => ($("tCopied").hidden = true), 1800); };
     if (navigator.clipboard) navigator.clipboard.writeText(text).then(done, () => fallbackCopy(text, done)); else fallbackCopy(text, done);
   });
@@ -579,7 +618,7 @@
             <p class="phow">${H[x.id].fixAdvice}</p>${resLink(x.id)}<div class="anline an">${anLine(x.id)}</div></div>
           <label class="pdone"><input type="checkbox" id="plan_${x.id}"><span>Done</span></label></article>`).join("") +
         (rest.length ? `<details class="card pmore"><summary>Also worth doing: ${rest.length} more change${rest.length === 1 ? "" : "s"} that each break paths on their own</summary><ul>${rest.map((x) => `<li><span><b>${ACTION[x.id]}</b> <small>${MINUTES[x.id]} min &middot; alone breaks ${x.removed} of ${iv.base}</small></span><a href="${RES[x.id][2]}" target="_blank" rel="noopener">${RES[x.id][1]} guide &#8599;</a></li>`).join("")}</ul></details>` : "") +
-        `<div class="row"><button type="button" class="a-btn safe" id="pCopy">Copy my plan with links</button><span class="copied" id="pCopied" hidden>Copied</span></div>`
+        `<div class="row"><button type="button" class="a-btn safe" id="pSave">Save my plan as an image</button><button type="button" class="a-btn" id="pCopy">Copy as text</button><span class="copied" id="pCopied" hidden>Copied</span></div><p class="qhint share-note">The image lists your habits. Share it only with people you trust.</p>`
       : `<div class="card empty">No single change breaks a whole path here, so start with the two habits that protect everything else.<div class="res-row">${resLink("no_email_2fa")}${resLink("password_reuse")}</div></div>`;
     const meta = (n) => {
       const done = new Set([...$("plan").querySelectorAll(".pitem")].filter((it) => it.querySelector("input").checked).map((it) => it.dataset.h));
@@ -595,6 +634,20 @@
       meta(buildPaths(left).length);
       if (c.checked) say("defender", "fixed: " + H[c.id.replace("plan_", "")].shortName.toLowerCase() + ". a link snaps.", "is-ok", c.id.replace("plan_", ""));
     }));
+    const saveBtn = $("pSave");
+    if (saveBtn) saveBtn.addEventListener("click", () => {
+      const p = paths[pIdx] || paths[0];
+      saveCard(saveBtn, {
+        title: "My unchain plan",
+        sub: sel.size + " habits, " + iv.base + " attack path" + (iv.base === 1 ? "" : "s") + ". " + (g.left === 0 ? (g.top.length === 1 ? "One change" : g.top.length + " changes") + " close" + (g.top.length === 1 ? "s" : "") + " them all." : "") + " Checked " + today() + ".",
+        steps: p ? flowSteps(p, sel, g.top.length ? g.top[0].id : null, "My first fix breaks the chain here.") : [],
+        sections: [
+          { title: "My plan, in order", tone: "safe", items: g.top.map((x, i) => ({ head: (i + 1) + ". " + ACTION[x.id] + " (about " + MINUTES[x.id] + " min)", body: H[x.id].fixAdvice, link: "Free guide: " + RES[x.id][1] + ", " + RES[x.id][2] })) },
+          { title: "If it already happened", items: [{ head: "Report it and get a recovery plan", link: "identitytheft.gov  /  reportfraud.ftc.gov  /  ic3.gov" }] },
+        ],
+        footer: FOOT,
+      }, "plan");
+    });
     const copy = $("pCopy");
     if (copy) copy.addEventListener("click", () => {
       const text = "My Chain Reaction unchain plan\n\n" + g.top.map((x, i) => `${i + 1}. ${ACTION[x.id]} (about ${MINUTES[x.id]} min)\n   ${H[x.id].fixAdvice}\n   Guide: ${RES[x.id][0]} (${RES[x.id][1]}) ${RES[x.id][2]}`).join("\n\n") + "\n\nIf it already happened: https://www.identitytheft.gov/";
