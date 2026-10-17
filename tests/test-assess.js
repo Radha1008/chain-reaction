@@ -64,6 +64,10 @@ async function main() {
     await waitFor(tab, `document.getElementById('tSave').textContent === 'Saved'`, 5000, "dominoes image saved");
     check(true, "'Save my dominoes as an image' draws and offers a PNG");
     check(await tab.evaluate(`(() => { const c = CRCard.render({ title: 't', sub: 's', steps: [{ text: 'x', tag: 'Attacker move' }], sections: [], footer: 'f' }); return c.width === 2160 && c.height > 200; })()`), "the image is drawn at print resolution");
+    check(await tab.evaluate(`new Promise((ok) => CRCard.render({ title: 't', sub: 's', steps: [{ text: 'x', tag: 'Attacker move' }], sections: [], footer: 'f' }).toBlob((b) => CRCard.withCredit(b).then((c) => c.arrayBuffer()).then((buf) => {
+      const s = new TextDecoder('latin1').decode(new Uint8Array(buf));
+      ok(s.indexOf('IHDR') < s.indexOf('tEXtCopyright') && s.indexOf('tEXtCopyright') < s.indexOf('IDAT') && s.includes('Copyright\\u0000\\u00a9 2026 Radha Prabhakaran') && s.includes('Author\\u0000Radha Prabhakaran'));
+    })))`), "the saved PNG carries the author and copyright inside the file");
     await tab.evaluate(`document.getElementById('tFull').click()`); await sleep(300);
     check(await tab.evaluate(`document.getElementById('pageFull').classList.contains('active') && CRAssess.hasPaths`), "'See the full assessment' carries the answers over");
 

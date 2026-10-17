@@ -13,6 +13,7 @@
     bg: "#f4ede4", card: "#fffaf3", ink: "#2a1c14", dim: "#6a594c", line: "#ddd0bf",
     edge: "#8b7666", accent: "#8f2f22", accentSoft: "#f3e1da", safe: "#2e6b52", safeSoft: "#e2eee6", goal: "#2a1c14",
   };
+  const AUTHOR = "Radha Prabhakaran", SITE = "https://radha1008.github.io/chainreaction-ewgh-2026/";
   const W = 1080, PAD = 64, SANS = '"IBM Plex Sans", system-ui, sans-serif', MONO = '"IBM Plex Mono", ui-monospace, monospace';
 
   function wrap(ctx, text, max) {
@@ -47,7 +48,11 @@
       return lines.length * lh;
     };
 
-    // header
+    // header: the author's name shares the title line, so cropping one off takes the other
+    if (paint) {
+      ctx.font = "600 20px " + MONO; ctx.fillStyle = C.dim; ctx.textAlign = "right";
+      ctx.fillText("BY " + AUTHOR.toUpperCase(), W - PAD, y + 28 * 0.72); ctx.textAlign = "left";
+    }
     y += text("CHAIN REACTION", "600 20px " + MONO, C.accent, PAD, inner, 28) + 6;
     y += text(d.title, "700 46px " + SANS, C.ink, PAD, inner, 56) + 8;
     y += text(d.sub, "400 24px " + SANS, C.dim, PAD, inner, 34) + 36;
@@ -138,6 +143,56 @@
     return y + PAD - 20;
   }
 
+  // A faint, repeated credit across the whole image, on top of everything, so no
+  // crop of a readable piece of the chart leaves it behind.
+  function watermark(ctx, h) {
+    const mark = "chain re·ac·tion · " + AUTHOR + " · ";
+    ctx.save();
+    ctx.globalAlpha = 0.045; ctx.fillStyle = C.ink; ctx.font = "500 22px " + MONO;
+    ctx.translate(W / 2, h / 2); ctx.rotate(-Math.PI / 7);
+    const reach = Math.hypot(W, h) / 2 + 60, tw = ctx.measureText(mark).width + 90, gap = 170;
+    for (let row = 0, y = -reach; y < reach; row++, y += gap) {
+      for (let x = -reach - (row % 2 ? tw / 2 : 0); x < reach; x += tw) ctx.fillText(mark, x, y);
+    }
+    ctx.restore();
+  }
+
+  // Credit written into the PNG file itself (tEXt chunks, Latin-1), read by image
+  // viewers and file properties. It can be stripped, but stripping it is removing
+  // a copyright notice.
+  const CRC = (() => {
+    const t = new Uint32Array(256);
+    for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; }
+    return t;
+  })();
+  function crc32(bytes) {
+    let c = 0xffffffff;
+    for (let i = 0; i < bytes.length; i++) c = CRC[(c ^ bytes[i]) & 0xff] ^ (c >>> 8);
+    return (c ^ 0xffffffff) >>> 0;
+  }
+  function textChunk(key, value) {
+    const data = Array.from(key + "\0" + value, (ch) => ch.charCodeAt(0) & 0xff);
+    const out = new Uint8Array(12 + data.length), view = new DataView(out.buffer);
+    view.setUint32(0, data.length);
+    out.set([116, 69, 88, 116], 4); // "tEXt"
+    out.set(data, 8);
+    view.setUint32(8 + data.length, crc32(out.subarray(4, 8 + data.length)));
+    return out;
+  }
+  const CREDIT = [
+    ["Title", "Chain Reaction"],
+    ["Author", AUTHOR],
+    ["Copyright", "© 2026 " + AUTHOR + ". All rights reserved. " + SITE],
+    ["Description", "Made with Chain Reaction by " + AUTHOR + ", " + SITE],
+    ["Disclaimer", "Educational simulation, not professional security advice."],
+  ];
+  function withCredit(blob) {
+    return blob.arrayBuffer().then((buf) => {
+      const png = new Uint8Array(buf), afterHeader = 8 + 25; // signature, then the IHDR chunk
+      return new Blob([png.subarray(0, afterHeader), ...CREDIT.map(([k, v]) => textChunk(k, v)), png.subarray(afterHeader)], { type: "image/png" });
+    });
+  }
+
   function render(d) {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
@@ -148,6 +203,7 @@
     ctx.fillStyle = C.bg; ctx.fillRect(0, 0, W, h);
     ctx.textBaseline = "alphabetic";
     layout(ctx, d, true);
+    watermark(ctx, h);
     return canvas;
   }
 
@@ -158,16 +214,16 @@
       : Promise.resolve();
     return ready.then(() => new Promise((resolve) => {
       const canvas = render(d);
-      canvas.toBlob((blob) => {
+      canvas.toBlob((plain) => withCredit(plain).catch(() => plain).then((blob) => {
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url; a.download = filename; a.rel = "noopener";
         document.body.appendChild(a); a.click(); a.remove();
         setTimeout(() => URL.revokeObjectURL(url), 4000);
         resolve(canvas);
-      }, "image/png");
+      }), "image/png");
     }));
   }
 
-  window.CRCard = { render, save };
+  window.CRCard = { render, save, withCredit };
 })();
