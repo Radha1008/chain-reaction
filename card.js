@@ -13,7 +13,7 @@
     bg: "#f4ede4", card: "#fffaf3", ink: "#2a1c14", dim: "#6a594c", line: "#ddd0bf",
     edge: "#8b7666", accent: "#8f2f22", accentSoft: "#f3e1da", safe: "#2e6b52", safeSoft: "#e2eee6", goal: "#2a1c14",
   };
-  const AUTHOR = "Radha Prabhakaran", SITE = "https://radha1008.github.io/chainreaction-ewgh-2026/";
+  const AUTHOR = "Radha Prabhakaran", SITE = "https://radha1008.github.io/chain-reaction/";
   const W = 1080, PAD = 64, SANS = '"IBM Plex Sans", system-ui, sans-serif', MONO = '"IBM Plex Mono", ui-monospace, monospace';
 
   function wrap(ctx, text, max) {

@@ -339,7 +339,7 @@
     $("tAn").innerHTML = anLine(h.id);
   }
   // ---------- "Save my chain": the result as a picture people can keep ----------
-  const SITE = "radha1008.github.io/chainreaction-ewgh-2026";
+  const SITE = "radha1008.github.io/chain-reaction";
   const today = () => new Date().toISOString().slice(0, 10);
   const analystOn = () => document.body.classList.contains("analyst");
   function flowSteps(p, mine, pullId, pullNote) {

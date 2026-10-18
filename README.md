@@ -2,7 +2,7 @@
 
 A privacy-first attack-path simulator. It shows how ordinary habits chain together into an attack path, and the smallest change that breaks the chain.
 
-**Live demo:** https://radha1008.github.io/chainreaction-ewgh-2026/
+**Live demo:** https://radha1008.github.io/chain-reaction/
 
 **Viewing is welcome. Copying or reusing any part needs my written permission.** © 2026 Radha Prabhakaran, all rights reserved. See [Copyright](#copyright).
 
