@@ -4,6 +4,8 @@ A privacy-first attack-path simulator. It shows how ordinary habits chain togeth
 
 **Live demo:** https://radha1008.github.io/chainreaction-ewgh-2026/
 
+**Viewing is welcome. Copying or reusing any part needs my written permission.** © 2026 Radha Prabhakaran, all rights reserved. See [Copyright](#copyright).
+
 ## What it is
 
 Most security advice is a list of rules with no visible cause and effect. Chain Reaction shows the cause and effect. You pick habits a person actually has, and the app draws the path an attacker could walk from one habit to the next. Then it points at the single link that costs the least to break and shows what happens to the path when you break it.
