@@ -445,7 +445,7 @@
       reticle.classList.remove("on");
       svg.getBoundingClientRect();
       setTimeout(() => svg.classList.remove("resetting"), 60);
-      note.textContent = "Live simulation: " + c.name;
+      note.textContent = "Simulation: " + c.name;
       P.forEach((_, i) => {
         setTimeout(() => {
           svg.querySelector(`[data-n="${i}"]`).classList.add("lit");
