@@ -93,7 +93,7 @@ The Detection Pack has its own Python tests; see [detections/README.md](detectio
 ## Versions
 
 - **Version 2 (live).** This redesign, from October 2026: one calm screen at a time, plain-language results, an optional attacker sim and a page guide. Same content, rules and Detection Pack as version 1.
-- **Version 1 (kept, not live).** The original site from September to October 2026: the home recon game, the Quick check day and the four-step Full assessment with its case board. Its code is preserved exactly as it was at the tag [`v1-original`](https://github.com/Radha1008/chain-reaction/tree/v1-original). It is no longer served as a website.
+- **Version 1 (kept, not live).** The original site from September to October 2026: the home recon game, the Quick check day and the four-step Full assessment with its case board. It is kept in the project's history and is no longer served as a website.
 
 ## Next steps
 
