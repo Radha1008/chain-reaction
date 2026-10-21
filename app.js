@@ -631,6 +631,13 @@
       e.currentTarget.setAttribute("aria-pressed", String(light));
     });
 
+    // Top bar key: a small list of what each item does.
+    const key = $("barKey"), keyBtn = $("barKeyBtn");
+    const setKey = (open) => { key.hidden = !open; keyBtn.setAttribute("aria-expanded", String(open)); };
+    keyBtn.addEventListener("click", (e) => { e.stopPropagation(); setKey(key.hidden); });
+    document.addEventListener("click", (e) => { if (!key.hidden && !e.target.closest(".key-wrap")) setKey(false); });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !key.hidden) { setKey(false); keyBtn.focus(); } });
+
     const dlg = $("helpModal");
     $("helpBtn").addEventListener("click", () => dlg.showModal());
     $("helpClose").addEventListener("click", () => dlg.close());

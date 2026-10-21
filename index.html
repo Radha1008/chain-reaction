@@ -9,7 +9,7 @@
   <meta name="description" content="Select the online habits that are true for you. See how an attacker could link them, and the fewest fixes that break the chain." />
   <meta name="color-scheme" content="dark light" />
   <!-- Fonts are bundled in fonts/ (SIL OFL): this page makes zero third-party requests. -->
-  <link rel="stylesheet" href="style.css?v=21" />
+  <link rel="stylesheet" href="style.css?v=22" />
   <link rel="icon" type="image/png" href="favicon.png" />
 </head>
 <body>
@@ -22,18 +22,33 @@
     </a>
 
     <nav class="steps" aria-label="Views">
-      <button type="button" class="step" data-view="brief" aria-current="true"><i>00</i>Start</button>
+      <button type="button" class="step" data-view="brief" aria-current="true" data-tip="What this site is, on one screen"><i>00</i>Start</button>
       <span class="step-line" aria-hidden="true"></span>
-      <button type="button" class="step" data-view="scan" aria-current="false"><i>01</i>Scan</button>
+      <button type="button" class="step" data-view="scan" aria-current="false" data-tip="Switch on the habits that are true for you"><i>01</i>Scan</button>
       <span class="step-line" aria-hidden="true"></span>
-      <button type="button" class="step" data-view="analysis" id="toAnalysisTab" disabled><i>02</i>Analysis</button>
+      <button type="button" class="step" data-view="analysis" id="toAnalysisTab" disabled data-tip="How your habits could be attacked, and what to fix first. Opens after a scan."><i>02</i>Analysis</button>
     </nav>
 
     <div class="bar-actions">
-      <button type="button" class="tgl" id="simBtn"><span class="led"></span>Attacker sim</button>
-      <button type="button" class="tgl" id="helpBtn" aria-haspopup="dialog">Already hacked?</button>
-      <button type="button" class="tgl" id="techToggle" aria-pressed="false" title="Show MITRE ATT&amp;CK techniques and defender notes"><span class="led"></span>Analyst</button>
-      <button type="button" class="tgl" id="themeToggle" aria-pressed="false" aria-label="Switch light or dark"><span class="led"></span><span id="themeLabel">Light</span></button>
+      <button type="button" class="tgl" id="simBtn" data-tip="Optional: play the attacker against made-up people"><span class="led"></span>Attacker sim</button>
+      <button type="button" class="tgl" id="helpBtn" aria-haspopup="dialog" data-tip="Official places to report it and recover">Already hacked?</button>
+      <button type="button" class="tgl" id="techToggle" aria-pressed="false" data-tip="Adds technical detail: MITRE ATT&amp;CK techniques and where each step could be detected"><span class="led"></span>Analyst</button>
+      <button type="button" class="tgl" id="themeToggle" aria-pressed="false" aria-label="Switch light or dark" data-tip="Switch between dark and light"><span class="led"></span><span id="themeLabel">Light</span></button>
+      <div class="key-wrap">
+        <button type="button" class="tgl key-btn" id="barKeyBtn" aria-expanded="false" aria-controls="barKey" aria-label="What is in the top bar">?</button>
+        <div class="bar-key" id="barKey" hidden>
+          <p class="cap">What is in the top bar</p>
+          <dl>
+            <dt>00 Start</dt><dd>What this site is, on one screen</dd>
+            <dt>01 Scan</dt><dd>Switch on the habits that are true for you</dd>
+            <dt>02 Analysis</dt><dd>How your habits could be attacked, and what to fix first. Opens after a scan.</dd>
+            <dt>Attacker sim</dt><dd>Optional: play the attacker against made-up people</dd>
+            <dt>Already hacked?</dt><dd>Official places to report it and recover</dd>
+            <dt>Analyst</dt><dd>Adds technical detail: MITRE ATT&amp;CK techniques and where each step could be detected</dd>
+            <dt>Light</dt><dd>Switch between dark and light</dd>
+          </dl>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -259,11 +274,11 @@
     <ul class="help-list" id="recovery"></ul>
   </dialog>
 
-  <script src="data.js?v=21"></script>
-  <script src="engine.js?v=21"></script>
-  <script src="app.js?v=21"></script>
-  <script src="figure.js?v=21"></script>
-  <script src="sim.js?v=21"></script>
-  <script src="tour.js?v=21"></script>
+  <script src="data.js?v=22"></script>
+  <script src="engine.js?v=22"></script>
+  <script src="app.js?v=22"></script>
+  <script src="figure.js?v=22"></script>
+  <script src="sim.js?v=22"></script>
+  <script src="tour.js?v=22"></script>
 </body>
 </html>
