@@ -23,8 +23,10 @@ Everyday people first, without leaving security professionals out. It was built 
 - **Run analysis.** A short log of what the engine actually did with your answers, with real counts: chains checked, paths found, techniques mapped, fixes chosen.
 - **Analysis.** Every attack path your habits form, scored out of 10 and labelled High, Medium or Low risk. Each path opens with one plain line, **To stop this path**, naming the weakest link and the change that breaks it, then a chain diagram and the steps in order, tagged You, Attacker or Result. **Fixes for all paths** lists the fewest changes that close the most paths, each with the time needed and a free official guide. A small line-drawn guide offers a walkthrough of the page.
 - **Attacker sim** (optional). Play the attacker against one of three made-up targets, each showing a different attack: Sue Doe (phishing), Justin Case (an old breached password plus a smart lock) and Simone Swap (a SIM swap). Find four clues, launch the attack, then switch sides and block it. Each clue shows what an attacker could do with it.
-- **Analyst mode.** One switch adds a MITRE ATT&CK technique and a detection note to every step of every path, the attacker's own moves included, plus the path's route through ATT&CK tactics. Where no technique honestly fits (spotting an empty house, meeting in person) the step says so and why, rather than forcing a code. Mapped to ATT&CK v20; `node tests/check-attack-live.js` re-checks every ID, name and tactic against attack.mitre.org.
+- **Analyst mode.** One switch adds a MITRE ATT&CK technique and a detection note to every step of every path, the attacker's own moves included, plus the path's route through ATT&CK tactics, and which Detection Pack rules would catch each step, linked to the rule files. Where no technique honestly fits (spotting an empty house, meeting in person) the step says so and why, rather than forcing a code. Mapped to ATT&CK v20; `node tests/check-attack-live.js` re-checks every ID, name and tactic against attack.mitre.org.
 - **Already hacked?** The official places to report it and recover.
+- **Plain language throughout.** Jargon such as VPN, 2FA and SIM swap carries a one-line definition, every item in the top bar has a tip, and a **How it works** panel explains the rules, the scoring, what is not covered, the sources and who the site is for (teens and adults).
+- **Take your fixes with you.** "Copy my fixes" copies the fix list and guide links as plain text, since nothing is saved. In Analyst mode, "Copy ATT&CK IDs" does the same for a path's techniques.
 - **Deterministic rules engine.** Every chain, score and recommendation comes from hand-written content in `data.js` and the rules in `engine.js`. The same inputs always produce the same output. There is no model call and nothing is generated at runtime.
 
 ## Detection Pack
@@ -52,7 +54,7 @@ Every guide and recovery link points at a free, official or non-profit source (C
 
 ## Privacy
 
-Everything runs in the browser. No accounts, no uploads, no tracking, no analytics, and nothing is stored. Fonts are bundled, so the page makes no third-party requests. The people in the scenarios are fictional. Close the tab and there is nothing left behind.
+Everything runs in the browser. No accounts, no uploads, no tracking, no analytics, and nothing is stored. Fonts are bundled, and a strict Content-Security-Policy only lets the page load its own files, so it cannot contact any other site. The people in the scenarios are fictional. Close the tab and there is nothing left behind.
 
 ## Limitations
 
@@ -76,6 +78,7 @@ Built with Claude Code. I directed every decision: scope, scenarios, rules, copy
 | `app.js` | Start, Scan, Analysis, the run log and Your own habits |
 | `sim.js` | The attacker sim |
 | `tour.js` / `figure.js` | The page guide and the line-drawn figures |
+| `detections-map.js` | Which Detection Pack rules catch which chain steps, generated from `detections/coverage.json` |
 | `detections/` | Sigma rules, sample logs and their tests (the Detection Pack) |
 
 ## Running the tests
