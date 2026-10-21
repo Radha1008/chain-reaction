@@ -1048,3 +1048,10 @@ main { overflow-y: auto; }
 .about-foot { margin-top: 16px; font-size: 12.5px; color: var(--faint); }
 @media (max-width: 560px) { .about-list { grid-template-columns: 1fr; gap: 4px; } .about-list dd { margin-bottom: 10px; } }
 .cr-fig.attacker .f-shadow { fill: #1a110c; stroke: var(--ink); stroke-width: 2.1; }
+
+/* Copy buttons */
+.copy-row { display: flex; align-items: center; gap: 12px; }
+.copy-row .ghost { padding: 6px 0; }
+.copied { font: 12px var(--mono); color: var(--accent); }
+.an-only { display: none; }
+body.analyst .an-only { display: flex; }

@@ -238,6 +238,7 @@
           <div class="key" id="pathKey"></div>
           <svg class="graph" id="graph" viewBox="0 0 720 96" role="img" aria-label="Attack chain diagram"></svg>
           <ol class="step-list" id="stepList" aria-label="Steps in this attack path"></ol>
+          <div class="copy-row an-only"><button type="button" class="ghost" id="copyIds">Copy ATT&amp;CK IDs for this path</button><span class="copied" id="copyIdsNote" role="status"></span></div>
         </div>
 
         <div class="panel hud fixes foldable" data-fold="fixes">
@@ -246,6 +247,7 @@
             <div class="fold-head"><p class="cap">Fixes for all paths</p><button type="button" class="fold-btn" aria-label="Fold panel">&rsaquo;</button></div>
             <ol id="plan" class="plan"></ol>
             <p class="after" id="planAfter"></p>
+            <div class="copy-row"><button type="button" class="ghost" id="copyFixes">Copy my fixes</button><span class="copied" id="copyFixesNote" role="status"></span></div>
             <div class="notes" id="anNotes" hidden></div>
             <button type="button" class="ghost" id="backToScan">&larr; Edit habits</button>
           </div>

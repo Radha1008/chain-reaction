@@ -344,6 +344,36 @@
     document.dispatchEvent(new CustomEvent("cr:view", { detail: view }));
   }
 
+  /* ---------- Copy as plain text (clipboard only; nothing is sent) ---------- */
+
+  function copyText(text, noteId) {
+    const note = $(noteId);
+    const done = (msg) => { note.textContent = msg; setTimeout(() => (note.textContent = ""), 2500); };
+    navigator.clipboard.writeText(text).then(() => done("Copied"), () => done("Copy did not work in this browser"));
+  }
+
+  function fixesText() {
+    const plan = CREngine.plan(selected);
+    const lines = [`Chain Reaction: my fixes`, `${paths.length} attack ${paths.length === 1 ? "path" : "paths"} from ${selected.size} ${selected.size === 1 ? "habit" : "habits"}.`, ""];
+    plan.steps.forEach((s, i) => {
+      const g = GUIDES[FIX_GUIDES[s.id]];
+      lines.push(`${i + 1}. ${FIX_ACTIONS[s.id]} (closes ${s.removed} of ${s.openBefore} paths, about ${FIX_MINUTES[s.id] || 10} min)`);
+      if (g) lines.push(`   Guide: ${g[1]}, ${g[0]}: ${g[2]}`);
+    });
+    lines.push("", plan.left === 0 ? "Together these close every path." : `${plan.left} ${plan.left === 1 ? "path stays" : "paths stay"} open after these.`, "https://radha1008.github.io/chain-reaction/");
+    return lines.join("\n");
+  }
+
+  function idsText() {
+    const p = paths[pathIdx];
+    const lines = [`${p.name} (MITRE ${ATTACK_VERSION})`];
+    p.steps.forEach((_, i) => {
+      const t = p.stepTech[i];
+      lines.push(`${i + 1}. ${t && t.id ? `${t.id} ${t.name} (${t.tactic})` : `No technique: ${t && t.gap ? t.gap : "not mapped"}`}`);
+    });
+    return lines.join("\n");
+  }
+
   /* ---------- Run sequence ---------- */
 
   // A short, readable run log before the results. Every line reports what the
@@ -671,6 +701,8 @@
     const dlg = $("helpModal");
     $("helpBtn").addEventListener("click", () => dlg.showModal());
     $("helpClose").addEventListener("click", () => dlg.close());
+    $("copyFixes").addEventListener("click", () => copyText(fixesText(), "copyFixesNote"));
+    $("copyIds").addEventListener("click", () => copyText(idsText(), "copyIdsNote"));
     const about = $("aboutModal");
     $("aboutBtn").addEventListener("click", () => about.showModal());
     $("aboutClose").addEventListener("click", () => about.close());
