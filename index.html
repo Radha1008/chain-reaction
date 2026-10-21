@@ -48,6 +48,7 @@
             <dt>Attacker sim</dt><dd>Optional: play the attacker against made-up people</dd>
             <dt>Already hacked?</dt><dd>Official places to report it and recover</dd>
             <dt>Analyst</dt><dd>Adds technical detail: MITRE ATT&amp;CK techniques and where each step could be detected</dd>
+            <dt>How it works</dt><dd>Bottom right: how the results are worked out, what is not covered, and the sources</dd>
             <dt>Light</dt><dd>Switch between dark and light</dd>
           </dl>
         </div>
@@ -62,7 +63,7 @@
         <svg class="constellation" id="constellation" viewBox="0 0 820 420" aria-hidden="true"></svg>
         <div class="stage-hud" aria-hidden="true"><span class="hud-tag"><b>Simulation</b><span>Scripted example, not live data</span><span>Mapped to MITRE ATT&amp;CK</span></span><span class="hud-ruler"></span></div>
         <div class="stage-copy">
-          <p class="eyebrow"><span class="blink" aria-hidden="true"></span>Cybersecurity awareness</p>
+          <p class="eyebrow"><span class="blink" aria-hidden="true"></span>Cybersecurity awareness &middot; for teens and adults</p>
           <h1 class="brief-h">Attackers rarely need one big mistake. They <em>chain small ones together.</em></h1>
           <p class="brief-p">Chain Reaction shows how your everyday online habits could link into a break-in, and the fewest changes that break the chain.</p>
           <div class="brief-cta">
@@ -259,6 +260,7 @@
     <span title="Nothing is saved. Closing the tab clears it.">Saved: nothing</span>
     <span>Mapped to MITRE <span id="attVer"></span></span>
     <span id="clock"></span>
+    <button type="button" class="status-link" id="aboutBtn" aria-haspopup="dialog">How it works</button>
     <span class="r">&copy; 2026 Radha Prabhakaran</span>
   </footer>
 
@@ -269,6 +271,30 @@
       <ol class="runner-log" id="runLog"></ol>
     </div>
   </div>
+
+  <dialog class="modal hud about" id="aboutModal" aria-labelledby="aboutTitle">
+    <div class="modal-head">
+      <h2 id="aboutTitle">How it works</h2>
+      <button type="button" class="ghost" id="aboutClose" aria-label="Close">Close</button>
+    </div>
+    <dl class="about-list">
+      <dt>Rules, not AI</dt>
+      <dd>Every attack chain is written by hand, and a fixed set of rules decides which ones your habits form. The same answers always give the same result. No AI model is used and nothing is generated as you go.</dd>
+      <dt>What is modelled</dt>
+      <dd>24 everyday habits and 15 hand-written attack chains. When a "way in" habit and a "weak spot" habit meet that no named chain covers, the site joins them into a general path.</dd>
+      <dt>The score</dt>
+      <dd>Each habit carries a weight from 1 (minor) to 3 (severe). A path's score adds up the weights of the habits in it, capped at 10. 7 or more is High risk, 5 to 6 is Medium, 4 or less is Low.</dd>
+      <dt>Not covered</dt>
+      <dd>Plenty. For example: approving a sign-in prompt you did not start, stolen browser sessions, deepfake voice calls, and malware on a work device. Use this to learn how small habits connect, not as a professional risk assessment.</dd>
+      <dt>Sources</dt>
+      <dd>Fix guides and recovery links come from free official or non-profit sources: CISA, FTC, FCC, FBI IC3, the National Cybersecurity Alliance, NNEDV Safety Net and Have I Been Pwned. Attack steps are mapped to MITRE ATT&amp;CK v20.</dd>
+      <dt>Privacy</dt>
+      <dd>Everything runs in your browser. Nothing you select is sent or saved, and the page's security policy blocks it from contacting any other site. Closing the tab clears it.</dd>
+      <dt>Who it is for</dt>
+      <dd>Teens and adults. The scenarios mention job hunting, dating, money and home security. Every person in them is made up.</dd>
+    </dl>
+    <p class="about-foot">&copy; 2026 Radha Prabhakaran. All rights reserved.</p>
+  </dialog>
 
   <dialog class="modal hud" id="helpModal" aria-labelledby="helpTitle">
     <div class="modal-head">

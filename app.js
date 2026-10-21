@@ -671,6 +671,10 @@
     const dlg = $("helpModal");
     $("helpBtn").addEventListener("click", () => dlg.showModal());
     $("helpClose").addEventListener("click", () => dlg.close());
+    const about = $("aboutModal");
+    $("aboutBtn").addEventListener("click", () => about.showModal());
+    $("aboutClose").addEventListener("click", () => about.close());
+    about.addEventListener("click", (e) => { if (e.target === about) about.close(); });
     dlg.addEventListener("click", (e) => { if (e.target === dlg) dlg.close(); });
   }
 
