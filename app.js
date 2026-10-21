@@ -70,7 +70,7 @@
     else if (ownMatches.length) {
       $("ownResult").innerHTML = `<p class="cap own-cap">Closest habits we model <span class="cap-r">switch on any that fit</span></p>
         <div class="sugg">${ownMatches.map((id) => { const h = CREngine.habit(id); return `<button type="button" class="sg" data-h="${id}" aria-pressed="${selected.has(id)}">
-          <span class="sw" aria-hidden="true"></span><span><strong>${esc(h.label)}</strong><small>${esc(h.attackerView)}</small></span></button>`; }).join("")}</div>
+          <span class="sw" aria-hidden="true"></span><span><strong>${glossify(esc(h.label))}</strong><small>${esc(h.attackerView)}</small></span></button>`; }).join("")}</div>
         <button type="button" class="ghost" data-keep>None of these fit: keep it as a note</button>`;
     } else {
       $("ownResult").innerHTML = `<p class="cap own-cap">No close match yet <span class="cap-r">judge it like an attacker would</span></p>
@@ -109,7 +109,7 @@
     $("sectorBlurb").textContent = STAGE_META[stage].blurb;
     $("sectorCount").textContent = `${list.filter((h) => selected.has(h.id)).length} selected`;
     $("cards").innerHTML = list.map((h) => `<button type="button" class="card" data-h="${h.id}" aria-pressed="${selected.has(h.id)}">
-      <span><span class="c-id">${CODE[h.id]}</span><span class="c-t">${esc(h.label)}</span></span><span class="sw" aria-hidden="true"></span></button>`).join("");
+      <span><span class="c-id">${CODE[h.id]}</span><span class="c-t">${glossify(esc(h.label))}</span></span><span class="sw" aria-hidden="true"></span></button>`).join("");
   }
 
   function renderTabs() {
@@ -250,9 +250,33 @@
       if (d) tech += `${tech ? "<br>" : ""}Detection: ${esc(d)}`;
       return `<li><button type="button" class="srow ${k}" data-n="${i}" aria-current="${i === nodeIdx}">
         <span class="s-num">${pad(i + 1)}</span>
-        <span class="s-body"><span class="s-kind">${esc(kind)}</span><span class="s-text">${esc(s)}</span>${tech ? `<span class="s-tech">${tech}</span>` : ""}</span></button></li>`;
+        <span class="s-body"><span class="s-kind">${esc(kind)}</span><span class="s-text">${glossify(esc(s))}</span>${tech ? `<span class="s-tech">${tech}</span>` : ""}</span></button></li>`;
     }).join("");
     renderGraph();
+  }
+
+  // Plain-English definitions for jargon. Shown on hover, or on focus where the
+  // text is not already inside a button. Placeholders stop one definition's
+  // wording from being matched by another term.
+  const TERMS = [
+    [/\bVPN\b/, "A service that encrypts your internet traffic, so others on the same network can't read it."],
+    [/\b(2FA|two-factor authentication|two-step login|second sign-in step)\b/i, "Two-step login: a second check when you sign in, like a code from an app, so a stolen password alone is not enough."],
+    [/\bSIM swaps?\b/i, "When someone persuades your phone company to move your number to their SIM card, so your texts and calls go to them."],
+    [/\bphishing\b/i, "A fake message built to trick you into giving away a password or opening a harmful link."],
+    [/\bpassword manager\b/i, "An app that creates and remembers a different strong password for every account."],
+    [/\bauthenticator app\b/i, "An app on your own phone that shows a short-lived sign-in code."],
+    [/\bQR codes?\b/, "A square barcode your phone camera opens as a link."],
+    [/\brouter\b/i, "The box that creates your home wifi."],
+    [/\bdata breach(es)?\b/i, "When a company's stored data, often passwords, is stolen and shared."],
+    [/\bspoofed\b/i, "Faked to look like it came from someone else."],
+  ];
+  function glossify(html, focusable) {
+    const found = [];
+    TERMS.forEach(([re, def]) => {
+      html = html.replace(re, (m) => { found.push([m, def]); return "\u0000" + (found.length - 1) + "\u0000"; });
+    });
+    return html.replace(/\u0000(\d+)\u0000/g, (_, k) =>
+      `<span class="gloss"${focusable ? ' tabindex="0"' : ""} data-tip="${esc(found[k][1])}">${found[k][0]}</span>`);
   }
 
   const upperFirst = (t) => t.charAt(0).toUpperCase() + t.slice(1);
@@ -274,7 +298,7 @@
     const wk = CREngine.habit(p.weakestLink);
     const tac = document.body.classList.contains("analyst") && p.tactics.length ? `<p class="key-why">${esc(ATTACK_VERSION)} tactics: ${p.tactics.map(esc).join(" &rarr; ")}</p>` : "";
     $("pathKey").innerHTML = `<p class="cap">To stop this path</p>
-      <p class="key-main"><b>${esc(upperFirst(plainName(wk.shortName)))}.</b> ${esc(FIX_ACTIONS[wk.id])}, and this whole path stops.</p>
+      <p class="key-main"><b>${esc(upperFirst(plainName(wk.shortName)))}.</b> ${glossify(esc(FIX_ACTIONS[wk.id]), true)}, and this whole path stops.</p>
       ${p.realWorld ? `<p class="key-why">${esc(p.realWorld)}</p>` : ""}${tac}`;
     $("pathPos").textContent = `${pad(i + 1)} / ${pad(paths.length)}`;
     $("prevPath").disabled = i === 0;
@@ -293,8 +317,8 @@
       const g = GUIDES[FIX_GUIDES[s.id]];
       return `<li class="${i === 0 ? "first" : ""}"><button type="button" class="f-sum" aria-expanded="false">
         ${i === 0 ? `<span class="f-start">Start here</span>` : ""}<span class="f-top"><span>Closes ${s.removed} of ${s.openBefore} paths</span><span>${FIX_MINUTES[s.id] || 10} min</span></span>
-        <strong>${esc(FIX_ACTIONS[s.id])}</strong></button>
-        <div class="f-body"><p>${esc(h.fixAdvice)}</p>
+        <strong><span>${glossify(esc(FIX_ACTIONS[s.id]))}</span></strong></button>
+        <div class="f-body"><p>${glossify(esc(h.fixAdvice), true)}</p>
         ${g ? `<a href="${g[2]}" target="_blank" rel="noopener">${esc(g[1])} guide: ${esc(g[0])}</a>` : ""}</div></li>`;
     }).join("");
     $("railFixes").textContent = plan.steps.length;
