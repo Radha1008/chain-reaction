@@ -11,7 +11,7 @@
   --raise: #191009;
   --ink: #f4ece6;
   --muted: #a8968b;
-  --faint: #5e4e45;
+  --faint: #93806f;
   --line: #24170f;
   --line-2: #36251a;
   --accent: #f09a62;
@@ -32,7 +32,7 @@
   --raise: #fbf7f3;
   --ink: #1d130e;
   --muted: #6b5a50;
-  --faint: #ab9a8f;
+  --faint: #776860;
   --line: #e6dad0;
   --line-2: #d6c5b8;
   --accent: #a5521d;
@@ -323,7 +323,7 @@ body.analyst .node-tech:not(:empty) { display: block; }
 .term { display: flex; flex-direction: column; padding: 0; overflow: hidden; background: rgba(8, 5, 4, 0.92); }
 :root[data-theme="light"] .term { background: #0e0907; color: #f4ece6; }
 .term-bar { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid #24170f; font: 12px var(--mono); color: #a8968b; }
-.term-bar .cap-r { margin-left: auto; letter-spacing: 0.1em; text-transform: uppercase; font-size: 11px; color: #5e4e45; }
+.term-bar .cap-r { margin-left: auto; letter-spacing: 0.1em; text-transform: uppercase; font-size: 11px; color: #93806f; }
 .term-dots { display: flex; gap: 6px; }
 .term-dots i { width: 9px; height: 9px; border-radius: 50%; border: 1px solid #36251a; }
 .term-out { flex: 1; min-height: 0; overflow-y: auto; padding: 16px 18px; font: 14px/1.75 var(--mono); }
@@ -653,19 +653,19 @@ body.analyst .s-tech { display: block; }
 .term-bar .cap-r { font-size: 10.5px; letter-spacing: 0.14em; }
 .term-out { padding: 18px 20px; font: 13.5px/1.85 var(--mono); }
 .term-out p { display: grid; grid-template-columns: 52px 1fr; }
-.t-ts { color: #4a3c34; font-size: 11.5px; padding-top: 1px; }
+.t-ts { color: #93806f; font-size: 11.5px; padding-top: 1px; }
 p.t-cmd::before { content: none; }
 p.t-cmd .t-body::before { content: "$ "; color: #f09a62; }
 .t-why { color: #d9a27e; }
-.t-meh { color: #5e4e45; }
+.t-meh { color: #93806f; }
 
 .term-cmds { gap: 4px 18px; padding: 14px 20px 16px; }
-.term-cmds::before { content: "Run"; width: 100%; font: 500 10.5px var(--mono); letter-spacing: 0.16em; text-transform: uppercase; color: #5e4e45; }
+.term-cmds::before { content: "Run"; width: 100%; font: 500 10.5px var(--mono); letter-spacing: 0.16em; text-transform: uppercase; color: #93806f; }
 button.t-cmd { border: 0; border-radius: 0; padding: 4px 0; font-size: 13px; color: #a8968b; border-bottom: 1px solid transparent; }
-button.t-cmd::before { content: "\203A  "; color: #5e4e45; }
+button.t-cmd::before { content: "\203A  "; color: #93806f; }
 button.t-cmd:hover:not(:disabled) { color: #f4ece6; border-bottom-color: #f09a62; }
 button.t-cmd:hover:not(:disabled)::before { color: #f09a62; }
-button.t-cmd:disabled { opacity: 1; color: #3d312a; text-decoration: line-through; }
+button.t-cmd:disabled { opacity: 1; color: #6b5a50; text-decoration: line-through; }
 button.t-cmd.go { color: #ff3b30; border: 0; }
 button.t-cmd.go::before { color: #ff3b30; }
 button.t-cmd.fix { color: #ffd2b5; border: 0; }
