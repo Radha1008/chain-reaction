@@ -231,6 +231,11 @@
     g.innerHTML = out;
   }
 
+  // Detection Pack rules (detections-map.js) that catch a given chain step.
+  const rulesFor = (chainId, i) => (typeof DETECTION_RULES === "undefined" ? [] :
+    DETECTION_RULES.filter((r) => r.steps.some((s) => s.chain === chainId && s.step === i)));
+  const REPO = "https://github.com/Radha1008/chain-reaction/blob/main/";
+
   function stepKind(p, i) {
     const h = p.stepHabits[i] && CREngine.habit(p.stepHabits[i]);
     if (p.stepHabits[i] === p.weakestLink) return ["weak", "You · weakest link"];
@@ -248,6 +253,7 @@
       if (t && t.id) tech += `<b>${t.id}</b> ${esc(t.name)} / ${esc(t.tactic)}`;
       else if (t && t.gap) tech += `No ATT&amp;CK technique: ${esc(t.gap)}`;
       if (d) tech += `${tech ? "<br>" : ""}Detection: ${esc(d)}`;
+      rulesFor(p.id, i).forEach((r) => { tech += `<br><span class="det">Caught by ${esc(r.code)}</span> ${esc(r.title)} (Sigma rule)`; });
       return `<li><button type="button" class="srow ${k}" data-n="${i}" aria-current="${i === nodeIdx}">
         <span class="s-num">${pad(i + 1)}</span>
         <span class="s-body"><span class="s-kind">${esc(kind)}</span><span class="s-text">${glossify(esc(s))}</span>${tech ? `<span class="s-tech">${tech}</span>` : ""}</span></button></li>`;
@@ -284,6 +290,14 @@
   // "Browser-Only Passwords" -> "browser-only passwords", keeping VPN, 2FA, PIN, SMS, QR.
   const plainName = (t) => t.split(" ").map((w) => (/^[A-Z0-9]{2,}$/.test(w) ? w : w.toLowerCase())).join(" ");
 
+  // Analyst mode: which tested Sigma rules would catch this path, with links.
+  function detLine(p) {
+    if (!document.body.classList.contains("analyst")) return "";
+    const hits = [];
+    p.steps.forEach((_, i) => rulesFor(p.id, i).forEach((r) => hits.push(`<a href="${REPO}${esc(r.file)}" target="_blank" rel="noopener">${esc(r.code)}</a> at step ${i + 1}`)));
+    return `<p class="key-why det-line">Detection Pack: ${hits.length ? hits.join(", ") + ". Each rule is tested against attack and normal sample logs on every change." : "no rule yet catches a step in this path."}</p>`;
+  }
+
   function selectPath(i) {
     pathIdx = i;
     nodeIdx = 0;
@@ -299,7 +313,7 @@
     const tac = document.body.classList.contains("analyst") && p.tactics.length ? `<p class="key-why">${esc(ATTACK_VERSION)} tactics: ${p.tactics.map(esc).join(" &rarr; ")}</p>` : "";
     $("pathKey").innerHTML = `<p class="cap">To stop this path</p>
       <p class="key-main"><b>${esc(upperFirst(plainName(wk.shortName)))}.</b> ${glossify(esc(FIX_ACTIONS[wk.id]), true)}, and this whole path stops.</p>
-      ${p.realWorld ? `<p class="key-why">${esc(p.realWorld)}</p>` : ""}${tac}`;
+      ${p.realWorld ? `<p class="key-why">${esc(p.realWorld)}</p>` : ""}${tac}${detLine(p)}`;
     $("pathPos").textContent = `${pad(i + 1)} / ${pad(paths.length)}`;
     $("prevPath").disabled = i === 0;
     $("nextPath").disabled = i === paths.length - 1;

@@ -1055,3 +1055,9 @@ main { overflow-y: auto; }
 .copied { font: 12px var(--mono); color: var(--accent); }
 .an-only { display: none; }
 body.analyst .an-only { display: flex; }
+
+/* Detection Pack in Analyst mode */
+.det { font-weight: 600; color: var(--accent); }
+.det-line { color: var(--muted); }
+.det-line a { color: var(--accent); }
+@media (min-width: 921px) and (max-height: 860px) { body.analyst .key-why.det-line { display: block; } }

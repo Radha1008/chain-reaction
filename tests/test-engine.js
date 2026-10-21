@@ -94,5 +94,12 @@ check(sp.steps.every((s, i) => i === 0 || s.openBefore <= sp.steps[i - 1].openBe
 check(C.E.buildPaths(new Set(["share_location", "smart_lock_email"])).length === 0, "signals alone form no path");
 check(JSON.stringify(C.E.buildPaths(student)) === JSON.stringify(C.E.buildPaths(new Set([...student].reverse()))), "same habits in any order give the same paths");
 
+console.log("\n[7] Detection Pack on the site");
+const DR = new Function(load("detections-map.js") + ";return DETECTION_RULES;")();
+const cov = JSON.parse(load("detections/coverage.json")).rules.map((r) => ({ code: r.code, title: r.title, catches: r.catches, level: r.level, techniques: r.techniques, file: r.file, steps: r.steps }));
+check(JSON.stringify(DR) === JSON.stringify(cov), `detections-map.js matches detections/coverage.json (${DR.length} rules)`);
+const badRef = DR.flatMap((r) => r.steps).filter((s) => { const c = C.CHAINS.find((x) => x.id === s.chain); return !c || s.step >= c.steps.length; });
+check(badRef.length === 0, `every rule points at a real chain step (${badRef.length} bad)`);
+
 console.log(failures ? `\n${failures} failure(s)` : "\nAll checks passed");
 process.exit(failures ? 1 : 0);
