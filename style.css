@@ -1013,3 +1013,10 @@ main { overflow-y: auto; }
 @media (hover: none) { [data-tip]::after { display: none; } }
 @media (max-width: 520px) { .bar-key { width: min(340px, calc(100vw - 32px)); } }
 .bar { position: relative; z-index: 30; }
+
+/* Carousel pause control */
+.car-pause svg { width: 12px; height: 12px; display: block; margin: auto; }
+.car-pause path { stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; fill: none; }
+.car-pause .i-play { fill: currentColor; stroke: none; display: none; }
+.car-pause[aria-pressed="true"] .i-pause { display: none; }
+.car-pause[aria-pressed="true"] .i-play { display: block; }

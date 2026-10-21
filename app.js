@@ -474,6 +474,12 @@
     const cards = [...track.children];
     let i = 0;
     let paused = false;
+    // A visible pause control (WCAG 2.2.2); hover and focus pause too.
+    let held = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const pauseBtn = $("carPause");
+    const syncPause = () => { pauseBtn.setAttribute("aria-pressed", String(held)); pauseBtn.setAttribute("aria-label", held ? "Play the slides" : "Pause the slides"); };
+    pauseBtn.addEventListener("click", () => { held = !held; syncPause(); });
+    syncPause();
     const perView = () => Math.max(1, Math.round(track.parentElement.clientWidth / (cards[0].offsetWidth + 14)));
     const max = () => Math.max(0, cards.length - perView());
     $("carDots").innerHTML = cards.map((_, k) => `<i data-k="${k}"></i>`).join("");
@@ -493,7 +499,7 @@
     car.addEventListener("mouseleave", () => (paused = false));
     car.addEventListener("focusin", () => (paused = true));
     car.addEventListener("focusout", () => (paused = false));
-    if (!matchMedia("(prefers-reduced-motion: reduce)").matches) setInterval(() => { if (!paused && !$("viewBrief").hidden) go(i + 1); }, 5000);
+    setInterval(() => { if (!held && !paused && !$("viewBrief").hidden) go(i + 1); }, 5000);
     window.addEventListener("resize", () => go(i));
     go(0);
 
