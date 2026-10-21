@@ -1,6 +1,7 @@
 // © 2026 Radha Prabhakaran. All rights reserved. See LICENSE.
 // Chain Reaction: the little line-drawn people. One drawing style, a few cast
-// members: the guide (shirt and tie), the attacker (hoodie and laptop) and the
+// members: the guide (shirt and tie), the attacker (hooded, face in shadow so
+// it reads as no one in particular, with a laptop) and the
 // three fictional targets. Targets have a mood: calm, worried or happy.
 // Shared by the Analysis tour and the attacker sim.
 
@@ -40,9 +41,8 @@
     attacker: () => `
       <path class="f-hoodie" d="M19.4 36.6 Q30 31.6 40.6 36.6 L41 56 L19 56 Z"/>
       <path class="f-hood" d="M16.6 30.4 Q14.8 5.6 30 5.2 Q45.2 5.6 43.4 30.4 Q37.4 35 30 35 Q22.6 35 16.6 30.4 Z"/>
-      <circle class="f-head" cx="30" cy="20.4" r="10.2"/>
+      <circle class="f-shadow" cx="30" cy="20.4" r="10.2"/>
       <path class="f-eye-x" d="M24.6 21 L28 21 M32 21 L35.4 21"/>
-      <path class="f-mouth" d="M27.4 26 Q31 27.4 33.6 25"/>
       <path class="f-line" d="M27.7 34.8 L27.3 39 M32.3 34.8 L32.7 39"/>
       <path class="f-line" d="M20.6 39 L23.2 49.2 M39.4 39 L36.8 49.2"/>
       <rect class="f-laptop" x="21.6" y="40.6" width="16.8" height="9.6" rx="1.2"/>

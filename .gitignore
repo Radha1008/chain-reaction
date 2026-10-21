@@ -22,3 +22,7 @@ PROGRESS.md
 # Detection Pack build output (KQL/SPL are a CI artifact)
 build/
 __pycache__/
+
+# local preview test pages
+_test*.html
+_figs.html
