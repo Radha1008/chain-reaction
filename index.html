@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <!-- Only this site's own files may load; nothing can be fetched from or sent to anywhere else. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'" />
+  <meta name="referrer" content="no-referrer" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="author" content="Radha Prabhakaran">
   <meta name="copyright" content="© 2026 Radha Prabhakaran. All rights reserved.">
@@ -9,7 +12,7 @@
   <meta name="description" content="Select the online habits that are true for you. See how an attacker could link them, and the fewest fixes that break the chain." />
   <meta name="color-scheme" content="dark light" />
   <!-- Fonts are bundled in fonts/ (SIL OFL): this page makes zero third-party requests. -->
-  <link rel="stylesheet" href="style.css?v=22" />
+  <link rel="stylesheet" href="style.css?v=23" />
   <link rel="icon" type="image/png" href="favicon.png" />
 </head>
 <body>
@@ -275,11 +278,11 @@
     <ul class="help-list" id="recovery"></ul>
   </dialog>
 
-  <script src="data.js?v=22"></script>
-  <script src="engine.js?v=22"></script>
-  <script src="app.js?v=22"></script>
-  <script src="figure.js?v=22"></script>
-  <script src="sim.js?v=22"></script>
-  <script src="tour.js?v=22"></script>
+  <script src="data.js?v=23"></script>
+  <script src="engine.js?v=23"></script>
+  <script src="app.js?v=23"></script>
+  <script src="figure.js?v=23"></script>
+  <script src="sim.js?v=23"></script>
+  <script src="tour.js?v=23"></script>
 </body>
 </html>
