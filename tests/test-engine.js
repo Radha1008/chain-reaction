@@ -69,7 +69,7 @@ check(odd.length === 0, `every guide and recovery link is an approved https sour
 
 console.log("\n[5] safety by design: what, never how");
 // Everything a visitor can read: the content, the page, and the scripts that write copy.
-const visible = ["data.js", "index.html", "home.js", "assess.js", "app.js"].map(load).join("\n");
+const visible = ["data.js", "index.html", "app.js", "sim.js", "tour.js", "figure.js"].map(load).join("\n");
 const TOOLS = ["evilginx", "modlishka", "muraena", "gophish", "mimikatz", "hashcat", "john the ripper", "hydra", "aircrack", "wifi pineapple", "bettercap", "metasploit", "sqlmap", "responder", "mspy", "flexispy", "cocospy", "spyic", "eyezy", "hoverwatch", "xnspy", "thetruthspy"];
 const named = TOOLS.filter((t) => new RegExp("\\b" + t.replace(/ /g, "\\s+") + "\\b", "i").test(visible));
 check(named.length === 0, `no attack or stalkerware tool is named (${named.join(", ") || "none"})`);

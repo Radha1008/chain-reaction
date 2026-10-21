@@ -5,6 +5,6 @@
   "license": "UNLICENSED",
   "private": true,
   "scripts": {
-    "test": "node tests/test-engine.js && node tests/test-home.js && node tests/test-assess.js"
+    "test": "node tests/test-engine.js"
   }
 }
