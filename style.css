@@ -1061,3 +1061,10 @@ body.analyst .an-only { display: flex; }
 .det-line { color: var(--muted); }
 .det-line a { color: var(--accent); }
 @media (min-width: 921px) and (max-height: 860px) { body.analyst .key-why.det-line { display: block; } }
+@media (max-width: 920px) { .bar-actions { flex-wrap: wrap; justify-content: flex-end; gap: 6px; } }
+@media (max-width: 520px) { .bar-actions .tgl { padding: 6px 8px; } }
+/* Tips exist only while shown, so hidden ones never widen the page */
+[data-tip]::after { display: none; }
+[data-tip]:hover::after, [data-tip]:focus-visible::after { display: block; opacity: 1; animation: tipShow 0.15s ease-out 0.25s backwards; }
+@keyframes tipShow { from { opacity: 0; } }
+@media (hover: none) { [data-tip]:hover::after { display: none; } }
